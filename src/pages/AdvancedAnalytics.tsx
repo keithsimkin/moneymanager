@@ -31,7 +31,7 @@ export default function AdvancedAnalytics() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Sparkles className="h-8 w-8 text-purple-600" />
+            <Sparkles className="h-8 w-8 text-blue-600" />
             AI-Powered Analytics
           </h1>
           <p className="text-muted-foreground mt-1">
@@ -70,7 +70,7 @@ export default function AdvancedAnalytics() {
 
       {/* Savings Velocity (if available) */}
       {savingsVelocity && (
-        <div className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg border">
+        <div className="p-6 bg-gradient-to-r from-blue-50 to-pink-50 dark:from-blue-900/20 dark:to-pink-900/20 rounded-lg border">
           <h3 className="text-lg font-semibold mb-4">Savings Velocity</h3>
           <div className="grid gap-4 md:grid-cols-3">
             <div>

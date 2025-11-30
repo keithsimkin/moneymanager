@@ -287,13 +287,13 @@ export default function HelpCenter() {
             {helpSections.map((section) => (
               <Card
                 key={section.id}
-                className="cursor-pointer hover:border-purple-600 transition-colors"
+                className="cursor-pointer hover:border-blue-600 transition-colors"
                 onClick={() => setSelectedSection(section.id)}
               >
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-950/30">
-                      <section.icon className="h-5 w-5 text-purple-600" />
+                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950/30">
+                      <section.icon className="h-5 w-5 text-blue-600" />
                     </div>
                     <CardTitle className="text-base">{section.title}</CardTitle>
                   </div>
@@ -396,7 +396,7 @@ export default function HelpCenter() {
                 {filteredSections.map((section) => (
                   <div key={section.id} className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <section.icon className="h-4 w-4 text-purple-600" />
+                      <section.icon className="h-4 w-4 text-blue-600" />
                       <h3 className="font-semibold">{section.title}</h3>
                     </div>
                     <div className="ml-6 space-y-2">
@@ -404,7 +404,7 @@ export default function HelpCenter() {
                         <button
                           key={idx}
                           onClick={() => setSelectedSection(section.id)}
-                          className="block text-sm text-purple-600 hover:underline"
+                          className="block text-sm text-blue-600 hover:underline"
                         >
                           {article.title}
                         </button>
@@ -437,7 +437,7 @@ export default function HelpCenter() {
         <div className="space-y-4">
           <button
             onClick={() => setSelectedSection(null)}
-            className="text-sm text-purple-600 hover:underline flex items-center gap-1"
+            className="text-sm text-blue-600 hover:underline flex items-center gap-1"
           >
             ← Back to Help Center
           </button>
@@ -449,8 +449,8 @@ export default function HelpCenter() {
                 <Card>
                   <CardHeader>
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-lg bg-purple-100 dark:bg-purple-950/30">
-                        <section.icon className="h-6 w-6 text-purple-600" />
+                      <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-950/30">
+                        <section.icon className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
                         <CardTitle>{section.title}</CardTitle>
@@ -464,7 +464,7 @@ export default function HelpCenter() {
                   <Card key={idx}>
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <BookOpenIcon className="h-5 w-5 text-purple-600" />
+                        <BookOpenIcon className="h-5 w-5 text-blue-600" />
                         {article.title}
                       </CardTitle>
                     </CardHeader>
@@ -496,28 +496,28 @@ export default function HelpCenter() {
           <CardContent className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div className="p-4 border border-gray-200 dark:border-border rounded-lg">
-                <KeyIcon className="h-6 w-6 text-purple-600 mb-2" />
+                <KeyIcon className="h-6 w-6 text-blue-600 mb-2" />
                 <h3 className="font-semibold mb-1">Keyboard Shortcuts</h3>
                 <p className="text-sm text-muted-foreground mb-3">
                   Learn all available keyboard shortcuts
                 </p>
                 <button
                   onClick={() => window.location.href = '/keyboard-shortcuts'}
-                  className="text-sm text-purple-600 hover:underline"
+                  className="text-sm text-blue-600 hover:underline"
                 >
                   View Shortcuts →
                 </button>
               </div>
 
               <div className="p-4 border border-gray-200 dark:border-border rounded-lg">
-                <Cog6ToothIcon className="h-6 w-6 text-purple-600 mb-2" />
+                <Cog6ToothIcon className="h-6 w-6 text-blue-600 mb-2" />
                 <h3 className="font-semibold mb-1">Settings</h3>
                 <p className="text-sm text-muted-foreground mb-3">
                   Configure your preferences and data
                 </p>
                 <button
                   onClick={() => window.location.href = '/settings'}
-                  className="text-sm text-purple-600 hover:underline"
+                  className="text-sm text-blue-600 hover:underline"
                 >
                   Go to Settings →
                 </button>

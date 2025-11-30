@@ -65,7 +65,7 @@ export const TrendChart = memo(function TrendChart({ data }: TrendChartProps) {
                       <div className="space-y-1">
                         <div className="flex items-center justify-between gap-4">
                           <div className="flex items-center gap-2">
-                            <div className="h-2 w-2 rounded-full bg-purple-600" />
+                            <div className="h-2 w-2 rounded-full bg-blue-600" />
                             <span className="text-xs text-gray-600 dark:text-gray-400">Income</span>
                           </div>
                           <span className="text-sm font-semibold text-gray-900 dark:text-white">

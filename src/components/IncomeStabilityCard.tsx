@@ -30,7 +30,7 @@ export function IncomeStabilityCard({ data }: IncomeStabilityCardProps) {
         <CardDescription>Measures consistency and reliability of income</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg">
+        <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-blue-50 dark:from-blue-900/20 dark:to-blue-900/20 rounded-lg">
           <div className={`text-5xl font-bold ${getScoreColor(data.score)}`}>
             {data.score}
           </div>

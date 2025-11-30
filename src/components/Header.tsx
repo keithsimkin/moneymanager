@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   MoonIcon as Moon,
   SunIcon as Sun,
@@ -7,9 +8,11 @@ import {
   UserIcon as User,
   ChevronDownIcon as ChevronDown,
   EllipsisHorizontalIcon as MoreHorizontal,
-  CommandLineIcon as Keyboard
+  CommandLineIcon as Keyboard,
+  ArrowRightOnRectangleIcon as LogOut
 } from '@heroicons/react/24/outline';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -23,7 +26,14 @@ import { ExportImportDialog } from './ExportImportDialog';
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [exportImportOpen, setExportImportOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   const toggleTheme = () => {
     if (theme === 'light') {
@@ -102,25 +112,32 @@ export default function Header() {
                 className="h-9 gap-2 px-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-muted"
                 aria-label="Open user menu"
               >
-                <div className="h-7 w-7 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                  <User className="h-4 w-4" />
+                <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-medium">
+                  {user?.name.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
                 </div>
                 <ChevronDown className="h-3 w-3" />
                 <span className="sr-only">User menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                Profile
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/settings')}>
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setExportImportOpen(true)}>
                 Export / Import Data
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400">
+                <LogOut className="h-4 w-4 mr-2" />
+                Log Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

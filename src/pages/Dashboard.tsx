@@ -182,7 +182,7 @@ export default function Dashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </Button>
-          <Button size="sm" className="h-9 bg-purple-600 hover:bg-purple-700 text-white">
+          <Button size="sm" className="h-9 bg-blue-600 hover:bg-blue-700 text-white">
             Download
           </Button>
         </div>
@@ -341,7 +341,7 @@ export default function Dashboard() {
               </button>
               <div className="ml-auto flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                   <span className="text-gray-600 dark:text-gray-400">This period</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -375,7 +375,7 @@ export default function Dashboard() {
                 <span className="font-semibold text-gray-900 dark:text-white">{accounts.length}</span>
               </div>
               <div className="w-full bg-gray-100 dark:bg-muted rounded-full h-1.5">
-                <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: '15%' }}></div>
+                <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '15%' }}></div>
               </div>
             </div>
 
@@ -385,7 +385,7 @@ export default function Dashboard() {
                 <span className="font-semibold text-gray-900 dark:text-white">{currentMonthTransactions.length}</span>
               </div>
               <div className="w-full bg-gray-100 dark:bg-muted rounded-full h-1.5">
-                <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: '6%' }}></div>
+                <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '6%' }}></div>
               </div>
             </div>
 
@@ -395,7 +395,7 @@ export default function Dashboard() {
                 <span className="font-semibold text-gray-900 dark:text-white">{budgetAlerts.length}</span>
               </div>
               <div className="w-full bg-gray-100 dark:bg-muted rounded-full h-1.5">
-                <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: '4%' }}></div>
+                <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '4%' }}></div>
               </div>
             </div>
 
@@ -405,7 +405,7 @@ export default function Dashboard() {
                 <span className="font-semibold text-gray-900 dark:text-white">{categoryChartData.length}</span>
               </div>
               <div className="w-full bg-gray-100 dark:bg-muted rounded-full h-1.5">
-                <div className="bg-purple-600 h-1.5 rounded-full" style={{ width: '2.7%' }}></div>
+                <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '2.7%' }}></div>
               </div>
             </div>
           </CardContent>
@@ -422,7 +422,7 @@ export default function Dashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-gray-900 dark:text-white">Budget Alerts</CardTitle>
-              <Button size="sm" className="h-8 bg-purple-600 hover:bg-purple-700 text-white text-xs">
+              <Button size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 text-white text-xs">
                 View All
               </Button>
             </div>

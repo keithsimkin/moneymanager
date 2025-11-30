@@ -117,7 +117,7 @@ export default function Settings() {
                 id="ai-provider"
                 value={config.provider}
                 onChange={(e) => updateConfig({ provider: e.target.value as any })}
-                className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
               >
                 <option value="openai">OpenAI (GPT-4, GPT-3.5)</option>
                 <option value="anthropic">Anthropic (Claude)</option>
@@ -186,7 +186,7 @@ export default function Settings() {
                   id="model"
                   value={config.model}
                   onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   <option value="gpt-4">GPT-4</option>
                   <option value="gpt-4-turbo">GPT-4 Turbo</option>
@@ -202,7 +202,7 @@ export default function Settings() {
                   id="model"
                   value={config.model}
                   onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   <option value="claude-3-opus">Claude 3 Opus</option>
                   <option value="claude-3-sonnet">Claude 3 Sonnet</option>
@@ -218,7 +218,7 @@ export default function Settings() {
                   id="model"
                   value={config.model}
                   onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                 >
                   <option value="gemini-pro">Gemini Pro</option>
                   <option value="gemini-ultra">Gemini Ultra</option>
@@ -268,7 +268,7 @@ export default function Settings() {
                 className={cn(
                   'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors',
                   theme === 'light'
-                    ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/30'
+                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/30'
                     : 'border-gray-200 dark:border-border hover:border-gray-300'
                 )}
               >
@@ -280,7 +280,7 @@ export default function Settings() {
                 className={cn(
                   'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors',
                   theme === 'dark'
-                    ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/30'
+                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/30'
                     : 'border-gray-200 dark:border-border hover:border-gray-300'
                 )}
               >
@@ -292,7 +292,7 @@ export default function Settings() {
                 className={cn(
                   'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors',
                   theme === 'system'
-                    ? 'border-purple-600 bg-purple-50 dark:bg-purple-950/30'
+                    ? 'border-blue-600 bg-blue-50 dark:bg-blue-950/30'
                     : 'border-gray-200 dark:border-border hover:border-gray-300'
                 )}
               >

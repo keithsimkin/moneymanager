@@ -36,7 +36,7 @@ export function SpendingHeatmapCard({ data }: SpendingHeatmapCardProps) {
                 <span className="text-sm w-24">{day}</span>
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-6 relative overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 h-6 rounded-full flex items-center justify-end pr-2"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 h-6 rounded-full flex items-center justify-end pr-2"
                     style={{ width: `${maxDayValue > 0 ? (amount / maxDayValue) * 100 : 0}%` }}
                   >
                     {amount > 0 && (

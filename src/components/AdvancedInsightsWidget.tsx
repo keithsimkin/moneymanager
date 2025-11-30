@@ -38,10 +38,10 @@ export function AdvancedInsightsWidget() {
   const totalSavingsOpportunity = savingsOpportunities.reduce((sum, opp) => sum + opp.potentialSavings, 0);
 
   return (
-    <Card className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-200 dark:border-purple-800">
+    <Card className="bg-gradient-to-br from-blue-50 to-blue-50 dark:from-blue-900/20 dark:to-blue-900/20 border-blue-200 dark:border-blue-800">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-purple-600" />
+          <Sparkles className="h-5 w-5 text-blue-600" />
           AI-Powered Insights
         </CardTitle>
         <CardDescription>Advanced analytics and predictions</CardDescription>
@@ -50,7 +50,7 @@ export function AdvancedInsightsWidget() {
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 bg-white/60 dark:bg-gray-900/40 rounded-lg">
             <div className="flex items-center gap-2 mb-1">
-              <TrendingUp className="h-4 w-4 text-purple-600" />
+              <TrendingUp className="h-4 w-4 text-blue-600" />
               <p className="text-xs text-muted-foreground">Health Score</p>
             </div>
             <p className={`text-2xl font-bold ${getHealthColor(financialHealthScore.score)}`}>
@@ -98,7 +98,7 @@ export function AdvancedInsightsWidget() {
 
         <Button 
           onClick={() => navigate('/advanced-analytics')}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
         >
           View Full AI Analytics
           <ArrowRight className="h-4 w-4 ml-2" />

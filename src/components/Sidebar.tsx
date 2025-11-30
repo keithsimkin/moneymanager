@@ -71,7 +71,7 @@ export default function Sidebar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center gap-2 px-4 py-5 border-b border-gray-200 dark:border-border">
-            <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
               <Wallet className="h-5 w-5 text-white" />
             </div>
             <span className="text-lg font-semibold">MoneyManager</span>
@@ -107,7 +107,7 @@ export default function Sidebar() {
                     className={cn(
                       'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                       isActive
-                        ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
+                        ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted'
                     )}
                     aria-current={isActive ? 'page' : undefined}
@@ -128,7 +128,7 @@ export default function Sidebar() {
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 location.pathname === '/help'
-                  ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
+                  ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted'
               )}
             >
@@ -141,7 +141,7 @@ export default function Sidebar() {
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 location.pathname === '/settings'
-                  ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
+                  ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted'
               )}
             >
