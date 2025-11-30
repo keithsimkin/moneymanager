@@ -9,6 +9,7 @@ import Analytics from './pages/Analytics';
 import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AIChat from './pages/AIChat';
 import KeyboardShortcuts from './pages/KeyboardShortcuts';
+import HelpCenter from './pages/HelpCenter';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog';
@@ -32,6 +33,7 @@ function AppContent() {
           <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
           <Route path="/ai-chat" element={<AIChat />} />
           <Route path="/keyboard-shortcuts" element={<KeyboardShortcuts />} />
+          <Route path="/help" element={<HelpCenter />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
