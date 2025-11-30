@@ -78,18 +78,18 @@ export default function Analytics() {
   }, [accounts, transactions]);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Analytics</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold">Analytics</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             Detailed financial insights and trends
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Time Period:</span>
+          <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline">Time Period:</span>
           <Select value={timePeriod} onValueChange={(value) => setTimePeriod(value as TimePeriod)}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-full sm:w-[180px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -103,7 +103,7 @@ export default function Analytics() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Total Income</CardDescription>
@@ -179,7 +179,7 @@ export default function Analytics() {
       </Card>
 
       {/* Two Column Layout for Category and Balance Charts */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Spending by Category</CardTitle>

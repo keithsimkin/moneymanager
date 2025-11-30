@@ -86,24 +86,24 @@ export default function Accounts() {
   }, []);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Accounts</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Accounts</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Manage your bank accounts and track your balances.
           </p>
         </div>
-        <Button onClick={handleCreateAccount}>
-          <Plus />
+        <Button onClick={handleCreateAccount} className="w-full sm:w-auto">
+          <Plus className="h-4 w-4" />
           Create Account
         </Button>
       </div>
 
       {/* Total Balance Summary */}
-      <div className="mb-6 p-6 bg-primary/5 rounded-lg border">
-        <p className="text-sm text-muted-foreground mb-1">Total Balance</p>
-        <p className="text-3xl font-bold">{formatCurrency(totalBalance)}</p>
+      <div className="mb-6 p-4 sm:p-6 bg-primary/5 rounded-lg border">
+        <p className="text-xs sm:text-sm text-muted-foreground mb-1">Total Balance</p>
+        <p className="text-2xl sm:text-3xl font-bold">{formatCurrency(totalBalance)}</p>
       </div>
 
       {/* Account List */}
@@ -116,7 +116,7 @@ export default function Accounts() {
           onAction={handleCreateAccount}
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
             <AccountCard
               key={account.id}

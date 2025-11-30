@@ -62,7 +62,7 @@ export default function Sidebar() {
       <aside
         id="sidebar-navigation"
         className={cn(
-          'fixed top-0 left-0 z-40 h-screen w-60 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-xl transition-transform duration-300 lg:translate-x-0 lg:static lg:h-auto',
+          'fixed top-0 left-0 z-40 h-screen w-64 bg-white dark:bg-card border-r border-gray-200 dark:border-border transition-transform duration-300 lg:translate-x-0 lg:static lg:h-auto lg:w-60 lg:rounded-xl lg:border',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
         aria-label="Main navigation"

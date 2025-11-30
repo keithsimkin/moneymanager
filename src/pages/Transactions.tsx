@@ -234,17 +234,17 @@ export default function Transactions() {
   }, []);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Transactions</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Transactions</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             View and manage your transactions.
           </p>
         </div>
-        <Button onClick={handleCreateTransaction} disabled={accounts.length === 0}>
-          <Plus />
-          Create Transaction
+        <Button onClick={handleCreateTransaction} disabled={accounts.length === 0} className="w-full sm:w-auto">
+          <Plus className="h-4 w-4" />
+          <span className="sm:inline">Create Transaction</span>
         </Button>
       </div>
 

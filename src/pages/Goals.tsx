@@ -109,35 +109,35 @@ export default function Goals() {
   }, [formMode, editingGoal, updateGoal, addGoal]);
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Goals</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Goals</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Set financial goals and track your progress towards achieving them.
           </p>
         </div>
-        <Button onClick={handleCreateGoal}>
-          <Plus />
+        <Button onClick={handleCreateGoal} className="w-full sm:w-auto">
+          <Plus className="h-4 w-4" />
           Create Goal
         </Button>
       </div>
 
       {/* Goals Summary */}
       {goals.length > 0 && (
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-3 sm:gap-4 mb-6">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Active:</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">Active:</span>
             <Badge variant="secondary">{goalsSummary.active}</Badge>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Achieved:</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">Achieved:</span>
             <Badge className="bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20">
               {goalsSummary.achieved}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Overdue:</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">Overdue:</span>
             <Badge variant="destructive">{goalsSummary.overdue}</Badge>
           </div>
         </div>
@@ -153,7 +153,7 @@ export default function Goals() {
           onAction={handleCreateGoal}
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {goals.map((goal) => (
             <GoalCard
               key={goal.id}

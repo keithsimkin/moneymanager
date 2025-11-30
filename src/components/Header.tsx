@@ -90,18 +90,18 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-30 w-full border-b border-gray-200 dark:border-border bg-white dark:bg-background">
-      <div className="flex h-14 items-center justify-between px-6 lg:px-8">
-        <div className="flex items-center gap-4 ml-12 lg:ml-0">
+      <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-2 sm:gap-4 ml-12 lg:ml-0 flex-1 min-w-0">
           <Breadcrumb>
             <BreadcrumbList>
               {breadcrumbs.map((crumb, index) => (
                 <div key={crumb.path} className="flex items-center">
-                  {index > 0 && <BreadcrumbSeparator />}
+                  {index > 0 && <BreadcrumbSeparator className="hidden sm:block" />}
                   <BreadcrumbItem>
                     {index === breadcrumbs.length - 1 ? (
-                      <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                      <BreadcrumbPage className="truncate max-w-[120px] sm:max-w-none">{crumb.label}</BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink asChild>
+                      <BreadcrumbLink asChild className="hidden sm:flex">
                         <Link to={crumb.path} className="flex items-center gap-1">
                           {index === 0 && <Home className="h-3.5 w-3.5" />}
                           {crumb.label}
@@ -115,11 +115,11 @@ export default function Header() {
           </Breadcrumb>
         </div>
 
-        <div className="flex items-center gap-2" role="toolbar" aria-label="User actions">
+        <div className="flex items-center gap-1 sm:gap-2" role="toolbar" aria-label="User actions">
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
+            className="h-8 w-8 sm:h-9 sm:w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted hidden sm:flex"
             onClick={() => {
               const event = new CustomEvent('toggle-shortcuts-dialog');
               window.dispatchEvent(event);
@@ -134,7 +134,7 @@ export default function Header() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
+            className="h-8 w-8 sm:h-9 sm:w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
             onClick={toggleTheme}
             aria-label={`Switch theme. Current theme: ${theme}`}
             title={`Current theme: ${theme}`}
@@ -147,13 +147,13 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="ghost" 
-                className="h-9 gap-2 px-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-muted"
+                className="h-8 sm:h-9 gap-1 sm:gap-2 px-1 sm:px-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-muted"
                 aria-label="Open user menu"
               >
                 <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-medium">
                   {user?.name.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
                 </div>
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="h-3 w-3 hidden sm:block" />
                 <span className="sr-only">User menu</span>
               </Button>
             </DropdownMenuTrigger>

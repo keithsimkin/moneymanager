@@ -76,8 +76,8 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
   const hasActiveFilters = searchTerm || category || startDate || endDate;
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Search Input */}
         <div className="grid gap-2">
           <Label htmlFor="search">Search</Label>

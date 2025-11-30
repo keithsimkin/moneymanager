@@ -8,7 +8,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   return (
-    <div className="h-screen bg-gray-100 dark:bg-gray-950 p-4 overflow-hidden">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 lg:h-screen lg:p-4 lg:overflow-hidden">
       {/* Skip to main content link for keyboard users */}
       <a
         href="#main-content"
@@ -17,11 +17,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
         Skip to main content
       </a>
       
-      <div className="flex gap-4 h-full">
+      <div className="flex flex-col lg:flex-row lg:gap-4 lg:h-full">
         <Sidebar />
-        <div className="flex-1 flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-background">
+        <div className="flex-1 flex flex-col overflow-hidden lg:rounded-xl lg:border lg:border-gray-200 lg:dark:border-gray-800 bg-gray-50 dark:bg-background">
           <Header />
-          <main id="main-content" className="flex-1 p-6 overflow-y-auto" role="main">
+          <main id="main-content" className="flex-1 p-4 sm:p-6 overflow-y-auto" role="main">
             {children}
           </main>
         </div>

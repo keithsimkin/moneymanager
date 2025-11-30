@@ -169,27 +169,27 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="h-9 gap-2">
-            <span className="text-sm">Monthly</span>
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button variant="outline" size="sm" className="h-8 sm:h-9 gap-2 text-xs sm:text-sm">
+            <span>Monthly</span>
+            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </Button>
-          <Button size="sm" className="h-9 bg-blue-600 hover:bg-blue-700 text-white">
+          <Button size="sm" className="h-8 sm:h-9 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm">
             Download
           </Button>
         </div>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
@@ -311,7 +311,7 @@ export default function Dashboard() {
       </div>
 
       {/* Charts */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-3">
         {/* Main Chart */}
         <Card className="col-span-full lg:col-span-2 bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -332,14 +332,16 @@ export default function Dashboard() {
             </button>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center gap-4 mb-4">
-              <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 dark:bg-muted text-gray-900 dark:text-white">
-                All Products
-              </button>
-              <button className="px-3 py-1.5 text-xs font-medium rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-muted">
-                All Categories
-              </button>
-              <div className="ml-auto flex items-center gap-4 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-4">
+              <div className="flex items-center gap-2">
+                <button className="px-3 py-1.5 text-xs font-medium rounded-md bg-gray-100 dark:bg-muted text-gray-900 dark:text-white">
+                  All Products
+                </button>
+                <button className="px-3 py-1.5 text-xs font-medium rounded-md text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-muted">
+                  All Categories
+                </button>
+              </div>
+              <div className="flex items-center gap-3 sm:gap-4 text-xs sm:ml-auto">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                   <span className="text-gray-600 dark:text-gray-400">This period</span>
@@ -350,7 +352,9 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
-            <TrendChart data={trendChartData} />
+            <div className="overflow-x-auto -mx-2 px-2">
+              <TrendChart data={trendChartData} />
+            </div>
           </CardContent>
         </Card>
 
@@ -413,7 +417,7 @@ export default function Dashboard() {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid gap-4 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 lg:grid-cols-4">
         {/* AI Insights Widget */}
         <AdvancedInsightsWidget />
 
@@ -476,17 +480,17 @@ export default function Dashboard() {
         {/* Recent Transactions */}
         <Card className="col-span-full lg:col-span-2 bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <CardTitle className="text-base font-semibold text-gray-900 dark:text-white">Recent Transactions</CardTitle>
               <div className="flex items-center gap-2">
-                <div className="relative">
+                <div className="relative flex-1 sm:flex-none">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
                   <Input 
-                    placeholder="Search product..." 
-                    className="pl-9 h-8 w-64 bg-gray-50 dark:bg-muted border-gray-200 dark:border-border text-sm"
+                    placeholder="Search..." 
+                    className="pl-9 h-8 w-full sm:w-48 lg:w-64 bg-gray-50 dark:bg-muted border-gray-200 dark:border-border text-sm"
                   />
                 </div>
-                <Button variant="ghost" size="sm" className="h-8 text-xs text-gray-600 dark:text-gray-400">
+                <Button variant="ghost" size="sm" className="h-8 text-xs text-gray-600 dark:text-gray-400 hidden sm:flex">
                   Refresh
                 </Button>
               </div>
@@ -494,8 +498,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             {recentTransactions.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="overflow-x-auto -mx-2 sm:mx-0">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-b border-gray-200 dark:border-border">
                       <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 dark:text-gray-400">Description</th>

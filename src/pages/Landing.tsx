@@ -105,16 +105,16 @@ export default function Landing() {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-background dark:to-gray-900" />
         <div className="absolute inset-0 bg-grid-pattern opacity-5" />
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-8">
-              <CodeBracketIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-6 sm:mb-8">
+              <CodeBracketIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-xs sm:text-sm font-medium text-blue-700 dark:text-blue-300">
                 Open Source & Free Forever
               </span>
             </div>
             
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight px-4">
               Your Money,
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -122,31 +122,31 @@ export default function Landing() {
               </span>
             </h1>
             
-            <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
+            <p className="text-base sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 mb-8 sm:mb-10 leading-relaxed px-4">
               A beautiful, privacy-focused personal finance app that helps you track expenses,
               manage budgets, and achieve your financial goals—all without compromising your data.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center px-4">
               <Button
                 onClick={handleGetStarted}
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg px-10 py-6 h-auto shadow-lg hover:shadow-xl transition-all"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 h-auto shadow-lg hover:shadow-xl transition-all"
               >
                 Start Managing Money
-                <ArrowTrendingUpIcon className="ml-2 h-5 w-5" />
+                <ArrowTrendingUpIcon className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 onClick={() => navigate('/login')}
                 size="lg"
                 variant="outline"
-                className="text-lg px-10 py-6 h-auto border-2"
+                className="text-base sm:text-lg px-6 sm:px-10 py-4 sm:py-6 h-auto border-2"
               >
                 Sign In
               </Button>
             </div>
             
-            <p className="mt-6 text-sm text-gray-500 dark:text-gray-500">
+            <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500 dark:text-gray-500 px-4">
               No credit card required • No data collection • No hidden fees
             </p>
           </div>
@@ -154,18 +154,18 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
+      <section className="py-12 sm:py-16 lg:py-24 bg-gray-50 dark:bg-gray-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
               Everything You Need
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400">
               Powerful features designed to simplify your financial life
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature) => (
               <div
                 key={feature.title}
@@ -187,14 +187,14 @@ export default function Landing() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-24">
+      <section className="py-12 sm:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">
                 Why Choose MoneyManager?
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-400 mb-6 sm:mb-8">
                 Built with privacy and simplicity in mind. Your financial data stays on your device,
                 giving you complete control and peace of mind.
               </p>
@@ -247,22 +247,22 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-blue-600 to-purple-600">
+      <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-br from-blue-600 to-purple-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
             Ready to Take Control?
           </h2>
-          <p className="text-xl text-blue-100 mb-10">
+          <p className="text-base sm:text-lg lg:text-xl text-blue-100 mb-6 sm:mb-10">
             Join thousands managing their finances smarter. Start your journey today.
           </p>
           <Button
             onClick={handleGetStarted}
             size="lg"
-            className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-10 py-6 h-auto shadow-xl hover:shadow-2xl transition-all"
+            className="bg-white text-blue-600 hover:bg-gray-100 text-base sm:text-lg px-8 sm:px-10 py-4 sm:py-6 h-auto shadow-xl hover:shadow-2xl transition-all w-full sm:w-auto"
           >
             Get Started for Free
           </Button>
-          <p className="mt-6 text-blue-100 text-sm">
+          <p className="mt-4 sm:mt-6 text-blue-100 text-xs sm:text-sm">
             Open source • Privacy-focused • No signup required
           </p>
         </div>
