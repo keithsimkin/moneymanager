@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Moon, Sun, Mail, Bell, User, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { Moon, Sun, Mail, Bell, User, ChevronDown, MoreHorizontal, Keyboard } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +40,21 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2" role="toolbar" aria-label="User actions">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
+            onClick={() => {
+              const event = new CustomEvent('toggle-shortcuts-dialog');
+              window.dispatchEvent(event);
+            }}
+            aria-label="Keyboard shortcuts (Shift + ?)"
+            title="Keyboard shortcuts (Shift + ?)"
+          >
+            <Keyboard className="h-4 w-4" />
+            <span className="sr-only">Keyboard shortcuts</span>
+          </Button>
+
           <Button
             variant="ghost"
             size="icon"

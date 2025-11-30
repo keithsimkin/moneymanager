@@ -12,7 +12,8 @@ import {
   X,
   Search,
   Settings,
-  HelpCircle
+  HelpCircle,
+  Keyboard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -120,6 +121,19 @@ export default function Sidebar() {
 
           {/* Bottom section */}
           <div className="mt-auto border-t border-gray-200 dark:border-border px-3 py-4 space-y-1">
+            <Link
+              to="/keyboard-shortcuts"
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                location.pathname === '/keyboard-shortcuts'
+                  ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted'
+              )}
+            >
+              <Keyboard className="h-4 w-4" />
+              Shortcuts
+            </Link>
             <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted w-full transition-colors">
               <Settings className="h-4 w-4" />
               Settings

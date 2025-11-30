@@ -7,12 +7,17 @@ import Budgets from './pages/Budgets';
 import Goals from './pages/Goals';
 import Analytics from './pages/Analytics';
 import AIChat from './pages/AIChat';
+import KeyboardShortcuts from './pages/KeyboardShortcuts';
 import NotFound from './pages/NotFound';
+import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog';
+import { useGlobalKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import './App.css';
 
-function App() {
+function AppContent() {
+  useGlobalKeyboardShortcuts();
+
   return (
-    <BrowserRouter>
+    <>
       <AppLayout>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -23,9 +28,19 @@ function App() {
           <Route path="/goals" element={<Goals />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/ai-chat" element={<AIChat />} />
+          <Route path="/keyboard-shortcuts" element={<KeyboardShortcuts />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>
+      <KeyboardShortcutsDialog />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
