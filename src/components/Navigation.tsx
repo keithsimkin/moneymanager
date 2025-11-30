@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Moon, Sun } from 'lucide-react';
+import { MoonIcon as Moon, SunIcon as Sun } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock } from 'lucide-react';
+import { ClockIcon as Clock } from '@heroicons/react/24/outline';
 import type { SpendingHeatmap } from '@/hooks/useAdvancedAnalytics';
 
 interface SpendingHeatmapCardProps {

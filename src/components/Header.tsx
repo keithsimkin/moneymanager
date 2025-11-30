@@ -1,5 +1,14 @@
 import { useState } from 'react';
-import { Moon, Sun, Mail, Bell, User, ChevronDown, MoreHorizontal, Keyboard } from 'lucide-react';
+import { 
+  MoonIcon as Moon,
+  SunIcon as Sun,
+  EnvelopeIcon as Mail,
+  BellIcon as Bell,
+  UserIcon as User,
+  ChevronDownIcon as ChevronDown,
+  EllipsisHorizontalIcon as MoreHorizontal,
+  CommandLineIcon as Keyboard
+} from '@heroicons/react/24/outline';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
 import {

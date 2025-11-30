@@ -9,7 +9,7 @@ import { SpendingHeatmapCard } from '@/components/SpendingHeatmapCard';
 import { AnomalyDetectionCard } from '@/components/AnomalyDetectionCard';
 import { IncomeStabilityCard } from '@/components/IncomeStabilityCard';
 import { DisposableIncomeCard } from '@/components/DisposableIncomeCard';
-import { Sparkles } from 'lucide-react';
+import { SparklesIcon as Sparkles } from '@heroicons/react/24/outline';
 
 export default function AdvancedAnalytics() {
   const {

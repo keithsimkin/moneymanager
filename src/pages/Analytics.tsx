@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { CategoryChart } from '@/components/CategoryChart';
 import { TrendChart } from '@/components/TrendChart';
 import { BalanceChart } from '@/components/BalanceChart';
-import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from 'lucide-react';
+import { ArrowUpIcon, ArrowDownIcon, ArrowTrendingUpIcon as TrendingUpIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
 type TimePeriod = '1m' | '3m' | '6m' | '1y';

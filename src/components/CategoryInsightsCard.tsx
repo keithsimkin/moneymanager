@@ -1,6 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react';
+import { 
+  ArrowTrendingUpIcon as TrendingUp,
+  ArrowTrendingDownIcon as TrendingDown,
+  MinusIcon as Minus,
+  ExclamationTriangleIcon as AlertTriangle
+} from '@heroicons/react/24/outline';
 import type { CategoryInsight } from '@/hooks/useAdvancedAnalytics';
 
 interface CategoryInsightsCardProps {

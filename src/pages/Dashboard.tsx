@@ -11,13 +11,13 @@ import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle,
-  AlertCircle,
-  LayoutDashboard,
-  Search
-} from 'lucide-react';
+  ArrowTrendingUpIcon as TrendingUp,
+  ArrowTrendingDownIcon as TrendingDown,
+  ExclamationTriangleIcon as AlertTriangle,
+  ExclamationCircleIcon as AlertCircle,
+  Squares2X2Icon as LayoutDashboard,
+  MagnifyingGlassIcon as Search
+} from '@heroicons/react/24/outline';
 
 export default function Dashboard() {
   const { accounts, transactions } = useFinance();

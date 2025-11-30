@@ -1,5 +1,10 @@
 import { memo } from 'react';
-import { Edit2, Trash2, AlertTriangle, AlertCircle } from 'lucide-react';
+import { 
+  PencilIcon as Edit2,
+  TrashIcon as Trash2,
+  ExclamationTriangleIcon as AlertTriangle,
+  ExclamationCircleIcon as AlertCircle
+} from '@heroicons/react/24/outline';
 import type { Budget } from '@/types';
 import {
   Card,

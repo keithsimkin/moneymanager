@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Keyboard } from 'lucide-react';
+import { CommandLineIcon as Keyboard } from '@heroicons/react/24/outline';
 
 interface Shortcut {
   keys: string[];

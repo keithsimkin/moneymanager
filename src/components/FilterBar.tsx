@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, X, CalendarIcon } from 'lucide-react';
+import { MagnifyingGlassIcon as Search, XMarkIcon as X, CalendarIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import type { FilterOptions } from '@/types';
 import { CATEGORIES } from '@/utils/categories';

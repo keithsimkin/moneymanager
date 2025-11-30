@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { 
+  PaperAirplaneIcon as Send,
+  CpuChipIcon as Bot,
+  UserIcon as User,
+  ArrowPathIcon as Loader2
+} from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';

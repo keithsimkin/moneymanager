@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { DollarSign, TrendingUp } from 'lucide-react';
+import { CurrencyDollarIcon as DollarSign, ArrowTrendingUpIcon as TrendingUp } from '@heroicons/react/24/outline';
 import type { IncomeStability } from '@/hooks/useAdvancedAnalytics';
 
 interface IncomeStabilityCardProps {

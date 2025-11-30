@@ -1,4 +1,4 @@
-import { Keyboard, Command } from 'lucide-react';
+import { CommandLineIcon as Keyboard, CommandLineIcon as Command } from '@heroicons/react/24/outline';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Shortcut {

@@ -1,5 +1,10 @@
 import { useState, useCallback } from 'react';
-import { Plus, AlertTriangle, AlertCircle, Target } from 'lucide-react';
+import { 
+  PlusIcon as Plus,
+  ExclamationTriangleIcon as AlertTriangle,
+  ExclamationCircleIcon as AlertCircle,
+  FlagIcon as Target
+} from '@heroicons/react/24/outline';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useBudgets } from '@/hooks/useBudgets';
 import type { Budget } from '@/types';

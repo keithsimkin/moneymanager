@@ -1,6 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, AlertCircle, Copy, Activity } from 'lucide-react';
+import { 
+  ExclamationTriangleIcon as AlertTriangle,
+  ExclamationCircleIcon as AlertCircle,
+  DocumentDuplicateIcon as Copy,
+  ChartBarIcon as Activity
+} from '@heroicons/react/24/outline';
 import type { Anomaly } from '@/hooks/useAdvancedAnalytics';
 import { format } from 'date-fns';
 

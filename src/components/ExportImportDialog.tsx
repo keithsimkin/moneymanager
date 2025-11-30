@@ -17,7 +17,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Download, Upload, FileJson, FileSpreadsheet, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { 
+  ArrowDownTrayIcon as Download,
+  ArrowUpTrayIcon as Upload,
+  DocumentTextIcon as FileJson,
+  DocumentChartBarIcon as FileSpreadsheet,
+  ExclamationCircleIcon as AlertCircle,
+  CheckCircleIcon as CheckCircle2
+} from '@heroicons/react/24/outline';
 
 interface ExportImportDialogProps {
   open: boolean;

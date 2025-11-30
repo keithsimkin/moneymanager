@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { Plus, TrendingUp } from 'lucide-react';
+import { PlusIcon as Plus, ArrowTrendingUpIcon as TrendingUp } from '@heroicons/react/24/outline';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Goal } from '@/types';
 import { GoalCard } from '@/components/GoalCard';

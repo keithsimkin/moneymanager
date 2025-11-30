@@ -1,5 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Wallet, AlertTriangle, TrendingUp } from 'lucide-react';
+import { 
+  WalletIcon as Wallet,
+  ExclamationTriangleIcon as AlertTriangle,
+  ArrowTrendingUpIcon as TrendingUp
+} from '@heroicons/react/24/outline';
 import type { DisposableIncome } from '@/hooks/useAdvancedAnalytics';
 
 interface DisposableIncomeCardProps {

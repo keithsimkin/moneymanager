@@ -1,21 +1,20 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, 
-  Wallet, 
-  Receipt, 
-  PiggyBank, 
-  Target, 
-  BarChart3,
-  Sparkles,
-  MessageSquare,
-  Menu,
-  X,
-  Search,
-  Settings,
-  HelpCircle,
-  Keyboard
-} from 'lucide-react';
+  Squares2X2Icon as LayoutDashboard,
+  WalletIcon as Wallet,
+  ReceiptPercentIcon as Receipt,
+  BanknotesIcon as PiggyBank,
+  FlagIcon as Target,
+  ChartBarIcon as BarChart3,
+  SparklesIcon as Sparkles,
+  ChatBubbleLeftRightIcon as MessageSquare,
+  Bars3Icon as Menu,
+  XMarkIcon as X,
+  MagnifyingGlassIcon as Search,
+  Cog6ToothIcon as Settings,
+  QuestionMarkCircleIcon as HelpCircle
+} from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,7 +63,7 @@ export default function Sidebar() {
       <aside
         id="sidebar-navigation"
         className={cn(
-          'fixed top-0 left-0 z-40 h-screen w-60 bg-white dark:bg-card border-r border-gray-200 dark:border-border transition-transform duration-300 lg:translate-x-0 lg:sticky',
+          'fixed top-0 left-0 z-40 h-screen w-60 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-xl transition-transform duration-300 lg:translate-x-0 lg:static lg:h-auto',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
         aria-label="Main navigation"
@@ -124,22 +123,18 @@ export default function Sidebar() {
           {/* Bottom section */}
           <div className="mt-auto border-t border-gray-200 dark:border-border px-3 py-4 space-y-1">
             <Link
-              to="/keyboard-shortcuts"
+              to="/settings"
               onClick={() => setIsOpen(false)}
               className={cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                location.pathname === '/keyboard-shortcuts'
+                location.pathname === '/settings'
                   ? 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted'
               )}
             >
-              <Keyboard className="h-4 w-4" />
-              Shortcuts
-            </Link>
-            <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted w-full transition-colors">
               <Settings className="h-4 w-4" />
               Settings
-            </button>
+            </Link>
             <button className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-muted w-full transition-colors">
               <HelpCircle className="h-4 w-4" />
               Help Center

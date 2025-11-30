@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Plus, Receipt, Wallet } from 'lucide-react';
+import { PlusIcon as Plus, ReceiptPercentIcon as Receipt, WalletIcon as Wallet } from '@heroicons/react/24/outline';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Transaction, FilterOptions } from '@/types';
 import { TransactionList } from '@/components/TransactionList';

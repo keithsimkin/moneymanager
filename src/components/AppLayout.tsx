@@ -17,9 +17,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
         Skip to main content
       </a>
       
-      <div className="flex rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden bg-gray-50 dark:bg-background h-full">
+      <div className="flex gap-4 h-full">
         <Sidebar />
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-background">
           <Header />
           <main id="main-content" className="flex-1 p-6 overflow-y-auto" role="main">
             {children}

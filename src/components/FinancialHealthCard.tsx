@@ -1,6 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { 
+  ArrowTrendingUpIcon as TrendingUp,
+  ArrowTrendingDownIcon as TrendingDown,
+  MinusIcon as Minus
+} from '@heroicons/react/24/outline';
 import type { FinancialHealthScore } from '@/hooks/useAdvancedAnalytics';
 
 interface FinancialHealthCardProps {

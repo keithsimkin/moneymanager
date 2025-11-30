@@ -12,7 +12,7 @@
 - **Tailwind CSS 4.1** for styling
 - **Radix UI** for accessible component primitives
 - **shadcn/ui** component patterns (customized in `src/components/ui/`)
-- **Lucide React** for icons
+- **Heroicons** for icons (with Lucide React as fallback for specific icons)
 - **Recharts** for data visualization
 
 ## Utilities

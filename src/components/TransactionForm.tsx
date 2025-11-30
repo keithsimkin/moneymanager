@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import type { Transaction, Account } from '@/types';
 import { CATEGORIES } from '@/utils/categories';

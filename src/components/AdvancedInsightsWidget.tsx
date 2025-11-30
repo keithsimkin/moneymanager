@@ -1,7 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, TrendingUp, AlertTriangle, Lightbulb, ArrowRight } from 'lucide-react';
+import { 
+  SparklesIcon as Sparkles,
+  ArrowTrendingUpIcon as TrendingUp,
+  ExclamationTriangleIcon as AlertTriangle,
+  LightBulbIcon as Lightbulb,
+  ArrowRightIcon as ArrowRight
+} from '@heroicons/react/24/outline';
 import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
 import { useNavigate } from 'react-router-dom';
 

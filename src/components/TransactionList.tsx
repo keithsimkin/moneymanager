@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Edit2, Trash2, Search } from 'lucide-react';
+import { PencilIcon as Edit2, TrashIcon as Trash2, MagnifyingGlassIcon as Search } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import type { Transaction, Account } from '@/types';
 import {

@@ -1,8 +1,8 @@
-import type { LucideIcon } from 'lucide-react';
+import type { ForwardRefExoticComponent, SVGProps } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface EmptyStateProps {
-  icon?: LucideIcon;
+  icon?: ForwardRefExoticComponent<SVGProps<SVGSVGElement>>;
   title: string;
   description?: string;
   actionLabel?: string;

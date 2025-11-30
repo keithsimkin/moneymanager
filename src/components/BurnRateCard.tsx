@@ -1,5 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertTriangle, TrendingDown, Calendar } from 'lucide-react';
+import { 
+  ExclamationTriangleIcon as AlertTriangle,
+  ArrowTrendingDownIcon as TrendingDown,
+  CalendarIcon as Calendar
+} from '@heroicons/react/24/outline';
 import type { BurnRateData } from '@/hooks/useAdvancedAnalytics';
 import { format } from 'date-fns';
 

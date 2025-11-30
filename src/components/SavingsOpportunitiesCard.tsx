@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Lightbulb, TrendingDown } from 'lucide-react';
+import { LightBulbIcon as Lightbulb, ArrowTrendingDownIcon as TrendingDown } from '@heroicons/react/24/outline';
 import type { SavingsOpportunity } from '@/hooks/useAdvancedAnalytics';
 
 interface SavingsOpportunitiesCardProps {

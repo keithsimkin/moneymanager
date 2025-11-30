@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import type { NetWorthTrend } from '@/hooks/useAdvancedAnalytics';
-import { TrendingUp } from 'lucide-react';
+import { ArrowTrendingUpIcon as TrendingUp } from '@heroicons/react/24/outline';
 
 interface NetWorthTrendCardProps {
   data: NetWorthTrend[];

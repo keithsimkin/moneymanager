@@ -1,5 +1,11 @@
 import { memo } from 'react';
-import { Edit2, Trash2, Plus, CheckCircle2, Clock } from 'lucide-react';
+import { 
+  PencilIcon as Edit2,
+  TrashIcon as Trash2,
+  PlusIcon as Plus,
+  CheckCircleIcon as CheckCircle2,
+  ClockIcon as Clock
+} from '@heroicons/react/24/outline';
 import type { Goal } from '@/types';
 import {
   Card,
