@@ -305,6 +305,7 @@ export function useAdvancedAnalytics() {
   // 5. Category Insights
   const categoryInsights = useMemo((): CategoryInsight[] => {
     const now = new Date();
+    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, 1);
 
@@ -447,7 +448,6 @@ export function useAdvancedAnalytics() {
   // 8. Disposable Income Projection
   const disposableIncome = useMemo((): DisposableIncome => {
     const now = new Date();
-    const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const monthlyIncome = transactions
       .filter(t => {
