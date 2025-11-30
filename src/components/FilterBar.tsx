@@ -97,12 +97,11 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
         {/* Category Filter */}
         <div className="grid gap-2">
           <Label htmlFor="category">Category</Label>
-          <Select value={category} onValueChange={setCategory}>
+          <Select value={category || undefined} onValueChange={(value) => setCategory(value)}>
             <SelectTrigger id="category" className="w-full">
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All categories</SelectItem>
               {CATEGORIES.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {cat}

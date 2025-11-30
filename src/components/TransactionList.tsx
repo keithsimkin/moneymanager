@@ -1,4 +1,4 @@
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Transaction, Account } from '@/types';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/EmptyState';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -45,10 +46,11 @@ export function TransactionList({
 
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
-        <p>No transactions found.</p>
-        <p className="text-sm mt-2">Add your first transaction to get started.</p>
-      </div>
+      <EmptyState
+        icon={Search}
+        title="No transactions found"
+        description="Try adjusting your filters or add a new transaction to get started."
+      />
     );
   }
 

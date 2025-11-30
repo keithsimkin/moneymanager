@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Wallet } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Account } from '@/types';
 import { AccountCard } from '@/components/AccountCard';
 import { AccountForm, type AccountFormData } from '@/components/AccountForm';
+import { EmptyState } from '@/components/EmptyState';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -107,13 +108,13 @@ export default function Accounts() {
 
       {/* Account List */}
       {accounts.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground mb-4">No accounts yet</p>
-          <Button onClick={handleCreateAccount}>
-            <Plus />
-            Create Your First Account
-          </Button>
-        </div>
+        <EmptyState
+          icon={Wallet}
+          title="No accounts yet"
+          description="Get started by creating your first account to track your finances."
+          actionLabel="Create Your First Account"
+          onAction={handleCreateAccount}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {accounts.map((account) => (
