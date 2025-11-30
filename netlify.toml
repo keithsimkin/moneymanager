@@ -2,11 +2,5 @@
   command = "pnpm build"
   publish = "dist"
 
-# Ensure pnpm is used
 [build.environment]
   NODE_VERSION = "20"
-  NPM_FLAGS = "--version"
-
-# Enable pnpm
-[[plugins]]
-  package = "@netlify/plugin-pnpm"
