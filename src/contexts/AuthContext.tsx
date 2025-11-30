@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { User, AuthContextType } from '../types/auth';
+import { supabase } from '../lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -8,36 +10,42 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Storage keys
-const STORAGE_KEY_USERS = 'moneymanager_users';
-const STORAGE_KEY_SESSION = 'moneymanager_session';
-
-// Simple hash function for password (in production, use proper hashing)
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+// Convert Supabase user to our User type
+function mapSupabaseUser(supabaseUser: SupabaseUser): User {
+  return {
+    id: supabaseUser.id,
+    email: supabaseUser.email || '',
+    name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
+    createdAt: supabaseUser.created_at,
+  };
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load session on mount
+  // Load session on mount and listen for auth changes
   useEffect(() => {
-    const sessionData = localStorage.getItem(STORAGE_KEY_SESSION);
-    if (sessionData) {
-      try {
-        const userData = JSON.parse(sessionData);
-        setUser(userData);
-      } catch (error) {
-        console.error('Failed to load session:', error);
-        localStorage.removeItem(STORAGE_KEY_SESSION);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(mapSupabaseUser(session.user));
       }
-    }
-    setIsLoaded(true);
+      setIsLoaded(true);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser(mapSupabaseUser(session.user));
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const register = useCallback(async (email: string, password: string, name: string) => {
@@ -50,41 +58,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw new Error('Password must be at least 6 characters');
     }
 
-    // Get existing users
-    const usersData = localStorage.getItem(STORAGE_KEY_USERS);
-    const users = usersData ? JSON.parse(usersData) : [];
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name,
+        },
+      },
+    });
 
-    // Check if user already exists
-    if (users.some((u: any) => u.email === email)) {
-      throw new Error('User with this email already exists');
+    if (error) {
+      throw new Error(error.message);
     }
 
-    // Hash password
-    const passwordHash = await hashPassword(password);
-
-    // Create new user
-    const newUser: User & { passwordHash: string } = {
-      id: crypto.randomUUID(),
-      email,
-      name,
-      passwordHash,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Save user
-    users.push(newUser);
-    localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
-
-    // Create session
-    const sessionUser: User = {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-      createdAt: newUser.createdAt,
-    };
-
-    setUser(sessionUser);
-    localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sessionUser));
+    if (data.user) {
+      setUser(mapSupabaseUser(data.user));
+    }
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
@@ -93,37 +83,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw new Error('Email and password are required');
     }
 
-    // Get existing users
-    const usersData = localStorage.getItem(STORAGE_KEY_USERS);
-    const users = usersData ? JSON.parse(usersData) : [];
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    // Hash password
-    const passwordHash = await hashPassword(password);
-
-    // Find user
-    const foundUser = users.find(
-      (u: any) => u.email === email && u.passwordHash === passwordHash
-    );
-
-    if (!foundUser) {
-      throw new Error('Invalid email or password');
+    if (error) {
+      throw new Error(error.message);
     }
 
-    // Create session
-    const sessionUser: User = {
-      id: foundUser.id,
-      email: foundUser.email,
-      name: foundUser.name,
-      createdAt: foundUser.createdAt,
-    };
-
-    setUser(sessionUser);
-    localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(sessionUser));
+    if (data.user) {
+      setUser(mapSupabaseUser(data.user));
+    }
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error signing out:', error);
+    }
     setUser(null);
-    localStorage.removeItem(STORAGE_KEY_SESSION);
   }, []);
 
   const value: AuthContextType = {

@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
@@ -24,31 +25,119 @@ function AppContent() {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route
-          path="/*"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <AppLayout>
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/accounts" element={<Accounts />} />
-                  <Route path="/transactions" element={<Transactions />} />
-                  <Route path="/budgets" element={<Budgets />} />
-                  <Route path="/goals" element={<Goals />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
-                  <Route path="/ai-chat" element={<AIChat />} />
-                  <Route path="/keyboard-shortcuts" element={<KeyboardShortcuts />} />
-                  <Route path="/help" element={<HelpCenter />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                <Dashboard />
               </AppLayout>
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/accounts"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Accounts />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Transactions />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/budgets"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Budgets />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Goals />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Analytics />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/advanced-analytics"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <AdvancedAnalytics />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ai-chat"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <AIChat />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/keyboard-shortcuts"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <KeyboardShortcuts />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/help"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <HelpCenter />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Settings />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <KeyboardShortcutsDialog />
     </>
