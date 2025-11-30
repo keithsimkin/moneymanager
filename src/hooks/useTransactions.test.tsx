@@ -10,10 +10,8 @@ function TestComponent() {
   const {
     filterTransactions,
     getTransactionsByAccount,
-    getTransactionsByDateRange,
     getRecentTransactions,
     getTransactionsByCategory,
-    getTransactionsByType,
     getIncomeTransactions,
     getExpenseTransactions,
     getTransactionCount,

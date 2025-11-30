@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Plus, AlertTriangle, AlertCircle, Target } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
+import { useBudgets } from '@/hooks/useBudgets';
 import type { Budget } from '@/types';
 import { BudgetCard } from '@/components/BudgetCard';
 import { BudgetForm, type BudgetFormData } from '@/components/BudgetForm';
@@ -19,61 +20,14 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function Budgets() {
-  const { budgets, transactions, addBudget, updateBudget, deleteBudget } = useFinance();
+  const { budgets, addBudget, updateBudget, deleteBudget } = useFinance();
+  const { getBudgetProgress, checkBudgetAlerts } = useBudgets();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingBudget, setEditingBudget] = useState<Budget | undefined>(undefined);
   const [deletingBudgetId, setDeletingBudgetId] = useState<string | null>(null);
 
-  // Calculate spending for a budget
-  const calculateSpent = (budget: Budget): number => {
-    const startDate = new Date(budget.startDate);
-    
-    // Calculate the end date based on period
-    let endDate = new Date(startDate);
-    switch (budget.period) {
-      case 'weekly':
-        endDate.setDate(startDate.getDate() + 7);
-        break;
-      case 'monthly':
-        endDate.setMonth(startDate.getMonth() + 1);
-        break;
-      case 'yearly':
-        endDate.setFullYear(startDate.getFullYear() + 1);
-        break;
-    }
-
-    // Filter transactions for this category within the budget period
-    const categoryTransactions = transactions.filter((t) => {
-      const transactionDate = new Date(t.date);
-      return (
-        t.category === budget.category &&
-        t.type === 'expense' &&
-        transactionDate >= startDate &&
-        transactionDate < endDate
-      );
-    });
-
-    // Sum up the absolute values of expense amounts
-    return categoryTransactions.reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  };
-
-  // Calculate budget alerts
-  const budgetAlerts = useMemo(() => {
-    const alerts: Array<{ budget: Budget; percentage: number; type: 'warning' | 'exceeded' }> = [];
-    
-    budgets.forEach((budget) => {
-      const spent = calculateSpent(budget);
-      const percentage = budget.amount > 0 ? (spent / budget.amount) * 100 : 0;
-      
-      if (percentage >= 100) {
-        alerts.push({ budget, percentage, type: 'exceeded' });
-      } else if (percentage >= 80) {
-        alerts.push({ budget, percentage, type: 'warning' });
-      }
-    });
-
-    return alerts;
-  }, [budgets, transactions]);
+  // Get budget alerts using the hook
+  const budgetAlerts = checkBudgetAlerts();
 
   const handleCreateBudget = () => {
     setEditingBudget(undefined);
@@ -131,7 +85,7 @@ export default function Budgets() {
         <div className="mb-6 space-y-3">
           {budgetAlerts.map((alert) => (
             <Alert
-              key={alert.budget.id}
+              key={alert.budgetId}
               variant={alert.type === 'exceeded' ? 'destructive' : 'default'}
               className={alert.type === 'warning' ? 'border-yellow-500/50 bg-yellow-500/10' : ''}
             >
@@ -144,7 +98,7 @@ export default function Budgets() {
                 {alert.type === 'exceeded' ? 'Budget Exceeded' : 'Budget Warning'}
               </AlertTitle>
               <AlertDescription>
-                Your <strong>{alert.budget.category}</strong> budget is at{' '}
+                Your <strong>{alert.category}</strong> budget is at{' '}
                 <strong>{alert.percentage.toFixed(1)}%</strong>.
                 {alert.type === 'exceeded'
                   ? ' You have exceeded your budget limit.'
@@ -166,15 +120,18 @@ export default function Budgets() {
         />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {budgets.map((budget) => (
-            <BudgetCard
-              key={budget.id}
-              budget={budget}
-              spent={calculateSpent(budget)}
-              onEdit={handleEditBudget}
-              onDelete={handleDeleteBudget}
-            />
-          ))}
+          {budgets.map((budget) => {
+            const progress = getBudgetProgress(budget.id);
+            return (
+              <BudgetCard
+                key={budget.id}
+                budget={budget}
+                spent={progress?.spent ?? 0}
+                onEdit={handleEditBudget}
+                onDelete={handleDeleteBudget}
+              />
+            );
+          })}
         </div>
       )}
 

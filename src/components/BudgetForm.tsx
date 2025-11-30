@@ -71,16 +71,31 @@ export function BudgetForm({ open, onOpenChange, onSubmit, budget }: BudgetFormP
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof BudgetFormData, string>> = {};
 
+    // Validate category
     if (!formData.category) {
       newErrors.category = 'Category is required';
     }
 
-    if (isNaN(formData.amount) || formData.amount <= 0) {
-      newErrors.amount = 'Amount must be a positive number';
+    // Validate amount
+    if (isNaN(formData.amount)) {
+      newErrors.amount = 'Amount must be a valid number';
+    } else if (formData.amount <= 0) {
+      newErrors.amount = 'Amount must be greater than zero';
+    } else if (!isFinite(formData.amount)) {
+      newErrors.amount = 'Amount must be a finite number';
+    } else if (formData.amount > 999999999.99) {
+      newErrors.amount = 'Amount is too large';
     }
 
+    // Validate start date
     if (!formData.startDate) {
       newErrors.startDate = 'Start date is required';
+    } else {
+      const startDate = new Date(formData.startDate);
+      if (isNaN(startDate.getTime())) {
+        newErrors.startDate = 'Invalid date';
+      }
+      // Note: We allow past dates for budgets as users may want to track historical budgets
     }
 
     setErrors(newErrors);

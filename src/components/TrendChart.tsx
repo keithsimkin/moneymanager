@@ -16,20 +16,10 @@ interface TrendData {
 }
 
 interface TrendChartProps {
-  data?: TrendData[];
+  data: TrendData[];
 }
 
-// Mock data for development - past 6 months
-const mockData: TrendData[] = [
-  { month: 'Jun', income: 4500, expenses: 3200 },
-  { month: 'Jul', income: 4800, expenses: 3500 },
-  { month: 'Aug', income: 4500, expenses: 3100 },
-  { month: 'Sep', income: 5000, expenses: 3800 },
-  { month: 'Oct', income: 4700, expenses: 3400 },
-  { month: 'Nov', income: 5200, expenses: 3900 },
-];
-
-export function TrendChart({ data = mockData }: TrendChartProps) {
+export function TrendChart({ data }: TrendChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data}>

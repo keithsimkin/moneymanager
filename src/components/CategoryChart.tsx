@@ -1,26 +1,9 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-
-interface CategoryData {
-  category: string;
-  amount: number;
-  percentage: number;
-  [key: string]: string | number;
-}
+import type { CategorySpending } from '@/types';
 
 interface CategoryChartProps {
-  data?: CategoryData[];
+  data: CategorySpending[];
 }
-
-// Mock data for development
-const mockData: CategoryData[] = [
-  { category: 'Groceries', amount: 450, percentage: 25 },
-  { category: 'Utilities', amount: 300, percentage: 16.7 },
-  { category: 'Entertainment', amount: 200, percentage: 11.1 },
-  { category: 'Transportation', amount: 350, percentage: 19.4 },
-  { category: 'Healthcare', amount: 150, percentage: 8.3 },
-  { category: 'Dining', amount: 250, percentage: 13.9 },
-  { category: 'Other', amount: 100, percentage: 5.6 },
-];
 
 // Theme-appropriate colors using CSS variables
 const COLORS = [
@@ -33,7 +16,7 @@ const COLORS = [
   'hsl(var(--accent))',
 ];
 
-export function CategoryChart({ data = mockData }: CategoryChartProps) {
+export function CategoryChart({ data }: CategoryChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
@@ -43,8 +26,8 @@ export function CategoryChart({ data = mockData }: CategoryChartProps) {
           cy="50%"
           labelLine={false}
           label={(entry) => {
-            const data = entry as unknown as CategoryData;
-            return `${data.category}: ${data.percentage.toFixed(1)}%`;
+            const item = entry as unknown as CategorySpending;
+            return `${item.category}: ${item.percentage.toFixed(1)}%`;
           }}
           outerRadius={80}
           fill="#8884d8"
@@ -57,19 +40,19 @@ export function CategoryChart({ data = mockData }: CategoryChartProps) {
         <Tooltip
           content={({ active, payload }) => {
             if (active && payload && payload.length) {
-              const data = payload[0].payload as CategoryData;
+              const item = payload[0].payload as CategorySpending;
               return (
                 <div className="rounded-lg border bg-card p-2 shadow-sm">
                   <div className="grid gap-2">
                     <div className="flex flex-col">
                       <span className="text-[0.70rem] uppercase text-muted-foreground">
-                        {data.category}
+                        {item.category}
                       </span>
                       <span className="font-bold text-foreground">
-                        ${data.amount.toFixed(2)}
+                        ${item.amount.toFixed(2)}
                       </span>
                       <span className="text-xs text-muted-foreground">
-                        {data.percentage.toFixed(1)}% of total
+                        {item.percentage.toFixed(1)}% of total
                       </span>
                     </div>
                   </div>

@@ -465,9 +465,11 @@
   - Integrate with useTransactions hook
   - _Requirements: 3.5_
 
-- [ ] 23. Implement analytics hook
+- [x] 23. Implement analytics hook
 
-- [-] 23.1 Create useAnalytics hook
+
+- [x] 23.1 Create useAnalytics hook
+
 
   - Implement monthly income/expense calculations
   - Add net cash flow calculation
@@ -476,38 +478,67 @@
   - Add recent transactions query
   - _Requirements: 4.2, 4.3, 4.4, 4.5, 3.3, 3.4, 9.1_
 
-- [ ] 24. Implement budgets hook
-- [ ] 24.1 Create useBudgets hook
+- [x] 24. Implement budgets hook
+
+
+
+
+- [x] 24.1 Create useBudgets hook
+
+
   - Implement budget progress calculation
   - Add budget alert detection (80% warning, 100% alert)
   - Create active budgets query
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
+-
 
-- [ ] 25. Implement goals hook
-- [ ] 25.1 Create useGoals hook
+- [x] 25. Implement goals hook
+
+
+
+
+- [x] 25.1 Create useGoals hook
+
+
   - Implement goal progress calculation
   - Add contribution functionality
   - Create status update logic (achieved, overdue)
   - Add time remaining calculation
   - _Requirements: 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 26. Implement recurring transactions hook
-- [ ] 26.1 Create useRecurring hook
+- [x] 26. Implement recurring transactions hook
+
+
+
+
+- [x] 26.1 Create useRecurring hook
+
+
   - Implement transaction generation logic based on frequency
   - Add due transaction detection
   - Create pattern management functions
   - _Requirements: 12.2, 12.3_
+-
 
-- [ ] 27. Implement export/import functionality
-- [ ] 27.1 Create export/import utilities
+- [x] 27. Implement export/import functionality
+
+
+
+- [x] 27.1 Create export/import utilities
+
   - Implement JSON export with all data
   - Add CSV export for transactions
   - Create import with merge/replace strategies
   - Add import validation and error handling
   - _Requirements: 10.1, 10.2, 10.3, 10.5_
 
-- [ ] 28. Implement export/import UI
-- [ ] 28.1 Build ExportImportDialog component
+- [x] 28. Implement export/import UI
+
+
+
+
+- [x] 28.1 Build ExportImportDialog component
+
   - Add export to JSON button
   - Add export to CSV button
   - Create file import input
@@ -516,20 +547,30 @@
   - Use shadcn/ui Dialog and Alert components
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
 
-- [ ] 29. Connect UI to real data
+- [x] 29. Connect UI to real data
+
+
+
   - Remove mock data from all components
   - Wire up all hooks to components
   - Test data flow from context through hooks to UI
   - Verify all CRUD operations work end-to-end
   - _Requirements: All_
+-
 
-- [ ] 30. Add form validation and error handling
+- [x] 30. Add form validation and error handling
+
+
+
+
   - Implement validation for all forms (accounts, transactions, budgets, goals)
   - Add error messages for invalid inputs
   - Handle edge cases (negative amounts, past dates, etc.)
   - _Requirements: All form-related requirements_
+-
 
 - [ ] 31. Optimize performance
+
   - Add React.memo to expensive components
   - Implement useMemo for calculations
   - Add useCallback for event handlers
@@ -537,6 +578,7 @@
   - _Requirements: All_
 
 - [ ] 32. Ensure accessibility
+
   - Add ARIA labels to all interactive elements
   - Test keyboard navigation
   - Verify color contrast in both themes

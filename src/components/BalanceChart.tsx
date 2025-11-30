@@ -15,18 +15,10 @@ interface BalanceData {
 }
 
 interface BalanceChartProps {
-  data?: BalanceData[];
+  data: BalanceData[];
 }
 
-// Mock data for development
-const mockData: BalanceData[] = [
-  { name: 'Main Checking', balance: 5420, type: 'checking' },
-  { name: 'Savings', balance: 12500, type: 'savings' },
-  { name: 'Credit Card', balance: -850, type: 'credit' },
-  { name: 'Investment', balance: 8300, type: 'investment' },
-];
-
-export function BalanceChart({ data = mockData }: BalanceChartProps) {
+export function BalanceChart({ data }: BalanceChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>

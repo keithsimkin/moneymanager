@@ -17,6 +17,7 @@ import {
   saveRecurringPatterns,
   exportToJSON,
   importFromJSON,
+  exportTransactionsToCSV,
   StorageError,
   ValidationError,
 } from '../utils/storage';
@@ -267,6 +268,10 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     });
   }, [accounts, transactions, budgets, goals, recurringPatterns]);
 
+  const exportTransactionsCSV = useCallback((): string => {
+    return exportTransactionsToCSV(transactions, accounts);
+  }, [transactions, accounts]);
+
   const importData = useCallback((data: string, strategy: 'merge' | 'replace') => {
     try {
       const importedData = importFromJSON(data);
@@ -357,6 +362,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     updateRecurringPattern,
     deleteRecurringPattern,
     exportData,
+    exportTransactionsCSV,
     importData,
   };
 

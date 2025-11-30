@@ -75,32 +75,61 @@ export function GoalForm({ open, onOpenChange, onSubmit, goal, mode = 'create' }
     const newErrors: Partial<Record<keyof GoalFormData | 'contribution', string>> = {};
 
     if (mode === 'contribute') {
-      if (isNaN(contributionAmount) || contributionAmount <= 0) {
-        newErrors.contribution = 'Contribution must be a positive number';
+      if (isNaN(contributionAmount)) {
+        newErrors.contribution = 'Contribution must be a valid number';
+      } else if (contributionAmount <= 0) {
+        newErrors.contribution = 'Contribution must be greater than zero';
+      } else if (!isFinite(contributionAmount)) {
+        newErrors.contribution = 'Contribution must be a finite number';
+      } else if (contributionAmount > 999999999.99) {
+        newErrors.contribution = 'Contribution amount is too large';
       }
       setErrors(newErrors);
       return Object.keys(newErrors).length === 0;
     }
 
+    // Validate goal name
     if (!formData.name.trim()) {
       newErrors.name = 'Goal name is required';
+    } else if (formData.name.trim().length > 100) {
+      newErrors.name = 'Goal name must be 100 characters or less';
     }
 
-    if (isNaN(formData.targetAmount) || formData.targetAmount <= 0) {
-      newErrors.targetAmount = 'Target amount must be a positive number';
+    // Validate target amount
+    if (isNaN(formData.targetAmount)) {
+      newErrors.targetAmount = 'Target amount must be a valid number';
+    } else if (formData.targetAmount <= 0) {
+      newErrors.targetAmount = 'Target amount must be greater than zero';
+    } else if (!isFinite(formData.targetAmount)) {
+      newErrors.targetAmount = 'Target amount must be a finite number';
+    } else if (formData.targetAmount > 999999999.99) {
+      newErrors.targetAmount = 'Target amount is too large';
     }
 
-    if (mode === 'create' && (isNaN(formData.currentAmount) || formData.currentAmount < 0)) {
-      newErrors.currentAmount = 'Current amount must be zero or positive';
+    // Validate current amount (only in create mode)
+    if (mode === 'create') {
+      if (isNaN(formData.currentAmount)) {
+        newErrors.currentAmount = 'Current amount must be a valid number';
+      } else if (formData.currentAmount < 0) {
+        newErrors.currentAmount = 'Current amount cannot be negative';
+      } else if (!isFinite(formData.currentAmount)) {
+        newErrors.currentAmount = 'Current amount must be a finite number';
+      } else if (formData.currentAmount > formData.targetAmount) {
+        newErrors.currentAmount = 'Current amount cannot exceed target amount';
+      }
     }
 
+    // Validate deadline
     if (!formData.deadline) {
       newErrors.deadline = 'Deadline is required';
     } else {
       const deadlineDate = new Date(formData.deadline);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (deadlineDate < today) {
+      
+      if (isNaN(deadlineDate.getTime())) {
+        newErrors.deadline = 'Invalid date';
+      } else if (deadlineDate < today) {
         newErrors.deadline = 'Deadline must be in the future';
       }
     }
@@ -274,6 +303,7 @@ export function GoalForm({ open, onOpenChange, onSubmit, goal, mode = 'create' }
                 type="date"
                 value={formData.deadline}
                 onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
                 aria-invalid={!!errors.deadline}
               />
               {errors.deadline && (

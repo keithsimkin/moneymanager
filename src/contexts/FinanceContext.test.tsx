@@ -594,7 +594,7 @@ describe('FinanceContext - Property-Based Tests', () => {
     
     // Generator for account data (without id, createdAt, updatedAt)
     const accountDataArb = fc.record({
-      name: fc.string({ minLength: 1, maxLength: 50 }),
+      name: fc.string({ minLength: 1, maxLength: 50 }).filter(s => s.trim().length > 0),
       type: accountTypeArb,
       initialBalance: fc.double({ min: -10000, max: 10000, noNaN: true }),
       currency: fc.constant('USD'), // Keep currency simple for now

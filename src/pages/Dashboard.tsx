@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/contexts/FinanceContext';
+import { useBudgets } from '@/hooks/useBudgets';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CategoryChart } from '@/components/CategoryChart';
 import { TrendChart } from '@/components/TrendChart';
@@ -19,7 +20,8 @@ import {
 } from 'lucide-react';
 
 export default function Dashboard() {
-  const { accounts, transactions, budgets } = useFinance();
+  const { accounts, transactions } = useFinance();
+  const { checkBudgetAlerts, getBudgetProgress } = useBudgets();
   const navigate = useNavigate();
 
   // Calculate account balances
@@ -78,16 +80,21 @@ export default function Dashboard() {
   const categoryChartData = useMemo(() => {
     const expenseTransactions = currentMonthTransactions.filter(t => t.type === 'expense');
     const categoryTotals = expenseTransactions.reduce((acc, t) => {
-      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      const existing = acc[t.category] || { amount: 0, count: 0 };
+      acc[t.category] = {
+        amount: existing.amount + t.amount,
+        count: existing.count + 1,
+      };
       return acc;
-    }, {} as Record<string, number>);
+    }, {} as Record<string, { amount: number; count: number }>);
 
-    const total = Object.values(categoryTotals).reduce((sum, amount) => sum + amount, 0);
+    const total = Object.values(categoryTotals).reduce((sum, data) => sum + data.amount, 0);
     
-    return Object.entries(categoryTotals).map(([category, amount]) => ({
+    return Object.entries(categoryTotals).map(([category, data]) => ({
       category,
-      amount,
-      percentage: total > 0 ? (amount / total) * 100 : 0,
+      amount: data.amount,
+      percentage: total > 0 ? (data.amount / total) * 100 : 0,
+      transactionCount: data.count,
     }));
   }, [currentMonthTransactions]);
 
@@ -128,27 +135,8 @@ export default function Dashboard() {
     }));
   }, [accountBalances]);
 
-  // Calculate budget alerts
-  const budgetAlerts = useMemo(() => {
-    return budgets.map(budget => {
-      const spent = currentMonthTransactions
-        .filter(t => t.type === 'expense' && t.category === budget.category)
-        .reduce((sum, t) => sum + t.amount, 0);
-      
-      const percentage = budget.amount > 0 ? (spent / budget.amount) * 100 : 0;
-      
-      let status: 'safe' | 'warning' | 'exceeded' = 'safe';
-      if (percentage >= 100) status = 'exceeded';
-      else if (percentage >= 80) status = 'warning';
-      
-      return {
-        budget,
-        spent,
-        percentage,
-        status,
-      };
-    }).filter(alert => alert.status !== 'safe');
-  }, [budgets, currentMonthTransactions]);
+  // Get budget alerts using the hook
+  const budgetAlerts = checkBudgetAlerts();
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -264,23 +252,28 @@ export default function Dashboard() {
             <div className="space-y-3">
               {budgetAlerts.map(alert => (
                 <div 
-                  key={alert.budget.id}
+                  key={alert.budgetId}
                   className="flex items-center justify-between p-3 rounded-lg border"
                 >
                   <div className="flex items-center gap-3">
-                    {alert.status === 'exceeded' ? (
+                    {alert.type === 'exceeded' ? (
                       <AlertCircle className="h-5 w-5 text-destructive" />
                     ) : (
                       <AlertTriangle className="h-5 w-5 text-yellow-600" />
                     )}
                     <div>
-                      <p className="font-medium">{alert.budget.category}</p>
+                      <p className="font-medium">{alert.category}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatCurrency(alert.spent)} of {formatCurrency(alert.budget.amount)}
+                        {(() => {
+                          const progress = getBudgetProgress(alert.budgetId);
+                          return progress 
+                            ? `${formatCurrency(progress.spent)} of ${formatCurrency(progress.budget.amount)}`
+                            : 'N/A';
+                        })()}
                       </p>
                     </div>
                   </div>
-                  <Badge variant={alert.status === 'exceeded' ? 'destructive' : 'secondary'}>
+                  <Badge variant={alert.type === 'exceeded' ? 'destructive' : 'secondary'}>
                     {alert.percentage.toFixed(0)}%
                   </Badge>
                 </div>

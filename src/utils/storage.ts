@@ -413,3 +413,58 @@ export function importFromJSON(json: string): StorageData {
     recurringPatterns: validateRecurringPatterns(data.recurringPatterns),
   };
 }
+
+// CSV export helper - escape CSV field values
+function escapeCSVField(value: string | number | boolean): string {
+  const stringValue = String(value);
+  
+  // If the value contains comma, quote, or newline, wrap it in quotes and escape internal quotes
+  if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+    return `"${stringValue.replace(/"/g, '""')}"`;
+  }
+  
+  return stringValue;
+}
+
+// Export transactions to CSV format
+export function exportTransactionsToCSV(transactions: Transaction[], accounts: Account[]): string {
+  // Create a map of account IDs to account names for lookup
+  const accountMap = new Map(accounts.map(acc => [acc.id, acc.name]));
+  
+  // CSV headers
+  const headers = [
+    'ID',
+    'Date',
+    'Account',
+    'Description',
+    'Category',
+    'Type',
+    'Amount',
+    'Is Recurring',
+    'Recurring ID',
+    'Created At',
+    'Updated At'
+  ];
+  
+  // Build CSV rows
+  const rows = transactions.map(transaction => {
+    const accountName = accountMap.get(transaction.accountId) || 'Unknown Account';
+    
+    return [
+      escapeCSVField(transaction.id),
+      escapeCSVField(transaction.date),
+      escapeCSVField(accountName),
+      escapeCSVField(transaction.description),
+      escapeCSVField(transaction.category),
+      escapeCSVField(transaction.type),
+      escapeCSVField(transaction.amount),
+      escapeCSVField(transaction.isRecurring),
+      escapeCSVField(transaction.recurringId || ''),
+      escapeCSVField(transaction.createdAt),
+      escapeCSVField(transaction.updatedAt)
+    ].join(',');
+  });
+  
+  // Combine headers and rows
+  return [headers.join(','), ...rows].join('\n');
+}

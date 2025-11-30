@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Moon, Sun, User } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Button } from '@/components/ui/button';
@@ -9,9 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ExportImportDialog } from './ExportImportDialog';
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
+  const [exportImportOpen, setExportImportOpen] = useState(false);
 
   const toggleTheme = () => {
     if (theme === 'light') {
@@ -62,16 +65,18 @@ export default function Header() {
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                Export Data
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                Import Data
+              <DropdownMenuItem onClick={() => setExportImportOpen(true)}>
+                Export / Import Data
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+
+      <ExportImportDialog
+        open={exportImportOpen}
+        onOpenChange={setExportImportOpen}
+      />
     </header>
   );
 }

@@ -98,20 +98,48 @@ export function TransactionForm({
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof TransactionFormData, string>> = {};
 
+    // Validate account selection
     if (!formData.accountId) {
       newErrors.accountId = 'Account is required';
     }
 
+    // Validate description
     if (!formData.description.trim()) {
       newErrors.description = 'Description is required';
+    } else if (formData.description.trim().length > 200) {
+      newErrors.description = 'Description must be 200 characters or less';
     }
 
-    if (isNaN(formData.amount) || formData.amount <= 0) {
-      newErrors.amount = 'Amount must be a positive number';
+    // Validate amount
+    if (isNaN(formData.amount)) {
+      newErrors.amount = 'Amount must be a valid number';
+    } else if (formData.amount <= 0) {
+      newErrors.amount = 'Amount must be greater than zero';
+    } else if (!isFinite(formData.amount)) {
+      newErrors.amount = 'Amount must be a finite number';
+    } else if (formData.amount > 999999999.99) {
+      newErrors.amount = 'Amount is too large';
     }
 
+    // Validate category
     if (!formData.category) {
       newErrors.category = 'Category is required';
+    }
+
+    // Validate date
+    if (!formData.date) {
+      newErrors.date = 'Date is required';
+    } else {
+      const transactionDate = new Date(formData.date);
+      const now = new Date();
+      // Allow transactions up to 1 day in the future to account for timezone differences
+      const maxFutureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      
+      if (isNaN(transactionDate.getTime())) {
+        newErrors.date = 'Invalid date';
+      } else if (transactionDate > maxFutureDate) {
+        newErrors.date = 'Transaction date cannot be in the future';
+      }
     }
 
     setErrors(newErrors);
@@ -258,7 +286,8 @@ export function TransactionForm({
                     variant="outline"
                     className={cn(
                       'w-full justify-start text-left font-normal',
-                      !formData.date && 'text-muted-foreground'
+                      !formData.date && 'text-muted-foreground',
+                      errors.date && 'border-destructive'
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
@@ -275,9 +304,13 @@ export function TransactionForm({
                     selected={new Date(formData.date)}
                     onSelect={handleDateSelect}
                     initialFocus
+                    disabled={(date) => date > new Date()}
                   />
                 </PopoverContent>
               </Popover>
+              {errors.date && (
+                <p className="text-sm text-destructive">{errors.date}</p>
+              )}
             </div>
 
             <div className="flex items-center gap-2">

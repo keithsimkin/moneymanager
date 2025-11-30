@@ -14,6 +14,9 @@ import {
   saveAllData,
   loadAllData,
   clearAllData,
+  exportTransactionsToCSV,
+  exportToJSON,
+  importFromJSON,
 } from './storage';
 import type { Account, Transaction, Budget, Goal, RecurringPattern } from '../types';
 
@@ -464,6 +467,254 @@ describe('Storage Property Tests', () => {
             
             // Should always throw for corrupted data
             expect(errorThrown).toBe(true);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  // Feature: finance-dashboard, Property 35: CSV export format correctness
+  describe('Property 35: CSV export format correctness', () => {
+    it('should export transactions to valid CSV format with proper headers', () => {
+      fc.assert(
+        fc.property(
+          fc.array(accountArb, { minLength: 1, maxLength: 5 }),
+          fc.array(transactionArb, { minLength: 1, maxLength: 20 }),
+          (accounts, transactions) => {
+            // Link transactions to accounts
+            const linkedTransactions = transactions.map((t, i) => ({
+              ...t,
+              accountId: accounts[i % accounts.length].id,
+            }));
+
+            const csv = exportTransactionsToCSV(linkedTransactions, accounts);
+            
+            // CSV should not be empty
+            expect(csv.length).toBeGreaterThan(0);
+            
+            // CSV should have headers
+            const lines = csv.split('\n');
+            expect(lines.length).toBeGreaterThan(0);
+            
+            const headers = lines[0];
+            expect(headers).toContain('ID');
+            expect(headers).toContain('Date');
+            expect(headers).toContain('Account');
+            expect(headers).toContain('Description');
+            expect(headers).toContain('Category');
+            expect(headers).toContain('Type');
+            expect(headers).toContain('Amount');
+            
+            // Should have correct number of rows (header + transactions)
+            expect(lines.length).toBe(linkedTransactions.length + 1);
+            
+            // Each transaction row should contain the transaction data
+            for (let i = 0; i < linkedTransactions.length; i++) {
+              const transaction = linkedTransactions[i];
+              const row = lines[i + 1];
+              
+              // Row should contain transaction ID
+              expect(row).toContain(transaction.id);
+              // Row should contain transaction type
+              expect(row).toContain(transaction.type);
+              // Row should contain transaction category
+              expect(row).toContain(transaction.category);
+            }
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should properly escape CSV fields containing commas', () => {
+      const accounts: Account[] = [{
+        id: 'acc-1',
+        name: 'Test Account',
+        type: 'checking',
+        initialBalance: 1000,
+        currency: 'USD',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      }];
+
+      const transactions: Transaction[] = [{
+        id: 'txn-1',
+        accountId: 'acc-1',
+        amount: 100,
+        description: 'Groceries, milk, bread',
+        category: 'groceries',
+        date: '2024-01-01T00:00:00.000Z',
+        type: 'expense',
+        isRecurring: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      }];
+
+      const csv = exportTransactionsToCSV(transactions, accounts);
+      
+      // Field with comma should be wrapped in quotes
+      expect(csv).toContain('"Groceries, milk, bread"');
+    });
+
+    it('should properly escape CSV fields containing quotes', () => {
+      const accounts: Account[] = [{
+        id: 'acc-1',
+        name: 'Test Account',
+        type: 'checking',
+        initialBalance: 1000,
+        currency: 'USD',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      }];
+
+      const transactions: Transaction[] = [{
+        id: 'txn-1',
+        accountId: 'acc-1',
+        amount: 100,
+        description: 'Payment for "special" item',
+        category: 'shopping',
+        date: '2024-01-01T00:00:00.000Z',
+        type: 'expense',
+        isRecurring: false,
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+      }];
+
+      const csv = exportTransactionsToCSV(transactions, accounts);
+      
+      // Quotes should be escaped as double quotes
+      expect(csv).toContain('""special""');
+    });
+
+    it('should handle empty transaction list', () => {
+      const accounts: Account[] = [];
+      const transactions: Transaction[] = [];
+
+      const csv = exportTransactionsToCSV(transactions, accounts);
+      
+      // Should still have headers
+      const lines = csv.split('\n');
+      expect(lines.length).toBe(1);
+      expect(lines[0]).toContain('ID');
+    });
+
+    it('should include account name in CSV output', () => {
+      fc.assert(
+        fc.property(
+          fc.array(accountArb, { minLength: 1, maxLength: 5 }),
+          fc.array(transactionArb, { minLength: 1, maxLength: 10 }),
+          (accounts, transactions) => {
+            // Link transactions to accounts
+            const linkedTransactions = transactions.map((t, i) => ({
+              ...t,
+              accountId: accounts[i % accounts.length].id,
+            }));
+
+            const csv = exportTransactionsToCSV(linkedTransactions, accounts);
+            
+            // Parse CSV to verify account names are present
+            const lines = csv.split('\n');
+            const dataRows = lines.slice(1); // Skip header
+            
+            // For each transaction, verify its account name appears in the corresponding row
+            for (let i = 0; i < linkedTransactions.length; i++) {
+              const transaction = linkedTransactions[i];
+              const account = accounts.find(a => a.id === transaction.accountId);
+              const row = dataRows[i];
+              
+              if (account) {
+                // The row should contain either the raw account name or the escaped version
+                // Account name might be escaped if it contains special characters
+                const hasRawName = row.includes(account.name);
+                const hasEscapedName = row.includes(`"${account.name.replace(/"/g, '""')}"`);
+                
+                expect(hasRawName || hasEscapedName).toBe(true);
+              }
+            }
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  // Feature: finance-dashboard, Property 33: Export data completeness
+  describe('Property 33: Export data completeness', () => {
+    it('should export all data types to JSON without data loss', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            accounts: fc.array(accountArb, { maxLength: 10 }),
+            transactions: fc.array(transactionArb, { maxLength: 10 }),
+            budgets: fc.array(budgetArb, { maxLength: 10 }),
+            goals: fc.array(goalArb, { maxLength: 10 }),
+            recurringPatterns: fc.array(recurringPatternArb, { maxLength: 10 }),
+          }),
+          (data) => {
+            const json = exportToJSON(data);
+            
+            // Should be valid JSON
+            expect(() => JSON.parse(json)).not.toThrow();
+            
+            const parsed = JSON.parse(json);
+            
+            // Should contain all data types
+            expect(parsed.accounts).toEqual(data.accounts);
+            expect(parsed.transactions).toEqual(data.transactions);
+            expect(parsed.budgets).toEqual(data.budgets);
+            expect(parsed.goals).toEqual(data.goals);
+            expect(parsed.recurringPatterns).toEqual(data.recurringPatterns);
+            
+            // Should include metadata
+            expect(parsed.exportDate).toBeDefined();
+            expect(parsed.version).toBeDefined();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+  });
+
+  // Feature: finance-dashboard, Property 34: Import data integrity
+  describe('Property 34: Import data integrity', () => {
+    it('should import valid JSON data correctly', () => {
+      fc.assert(
+        fc.property(
+          fc.record({
+            accounts: fc.array(accountArb, { maxLength: 10 }),
+            transactions: fc.array(transactionArb, { maxLength: 10 }),
+            budgets: fc.array(budgetArb, { maxLength: 10 }),
+            goals: fc.array(goalArb, { maxLength: 10 }),
+            recurringPatterns: fc.array(recurringPatternArb, { maxLength: 10 }),
+          }),
+          (data) => {
+            const json = exportToJSON(data);
+            const imported = importFromJSON(json);
+            
+            // Should preserve all data
+            expect(imported.accounts).toEqual(data.accounts);
+            expect(imported.transactions).toEqual(data.transactions);
+            expect(imported.budgets).toEqual(data.budgets);
+            expect(imported.goals).toEqual(data.goals);
+            expect(imported.recurringPatterns).toEqual(data.recurringPatterns);
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError for invalid import data', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            fc.constant('{"invalid": "data"}'),
+            fc.constant('[]'),
+            fc.constant('null'),
+            fc.constant('{"accounts": "not an array"}')
+          ),
+          (invalidJson) => {
+            expect(() => importFromJSON(invalidJson)).toThrow();
           }
         ),
         { numRuns: 100 }

@@ -1,112 +1,81 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useFinance } from '@/contexts/FinanceContext';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CategoryChart } from '@/components/CategoryChart';
 import { TrendChart } from '@/components/TrendChart';
 import { BalanceChart } from '@/components/BalanceChart';
 import { ArrowUpIcon, ArrowDownIcon, TrendingUpIcon } from 'lucide-react';
-
-// Mock data for different time periods
-const mockDataByPeriod = {
-  '1m': {
-    trend: [
-      { month: 'Nov', income: 5200, expenses: 3900 },
-    ],
-    category: [
-      { category: 'Groceries', amount: 450, percentage: 25 },
-      { category: 'Utilities', amount: 300, percentage: 16.7 },
-      { category: 'Entertainment', amount: 200, percentage: 11.1 },
-      { category: 'Transportation', amount: 350, percentage: 19.4 },
-      { category: 'Healthcare', amount: 150, percentage: 8.3 },
-      { category: 'Dining', amount: 250, percentage: 13.9 },
-      { category: 'Other', amount: 100, percentage: 5.6 },
-    ],
-    totalIncome: 5200,
-    totalExpenses: 3900,
-  },
-  '3m': {
-    trend: [
-      { month: 'Sep', income: 5000, expenses: 3800 },
-      { month: 'Oct', income: 4700, expenses: 3400 },
-      { month: 'Nov', income: 5200, expenses: 3900 },
-    ],
-    category: [
-      { category: 'Groceries', amount: 1350, percentage: 25 },
-      { category: 'Utilities', amount: 900, percentage: 16.7 },
-      { category: 'Entertainment', amount: 600, percentage: 11.1 },
-      { category: 'Transportation', amount: 1050, percentage: 19.4 },
-      { category: 'Healthcare', amount: 450, percentage: 8.3 },
-      { category: 'Dining', amount: 750, percentage: 13.9 },
-      { category: 'Other', amount: 300, percentage: 5.6 },
-    ],
-    totalIncome: 14900,
-    totalExpenses: 11100,
-  },
-  '6m': {
-    trend: [
-      { month: 'Jun', income: 4500, expenses: 3200 },
-      { month: 'Jul', income: 4800, expenses: 3500 },
-      { month: 'Aug', income: 4500, expenses: 3100 },
-      { month: 'Sep', income: 5000, expenses: 3800 },
-      { month: 'Oct', income: 4700, expenses: 3400 },
-      { month: 'Nov', income: 5200, expenses: 3900 },
-    ],
-    category: [
-      { category: 'Groceries', amount: 2700, percentage: 25 },
-      { category: 'Utilities', amount: 1800, percentage: 16.7 },
-      { category: 'Entertainment', amount: 1200, percentage: 11.1 },
-      { category: 'Transportation', amount: 2100, percentage: 19.4 },
-      { category: 'Healthcare', amount: 900, percentage: 8.3 },
-      { category: 'Dining', amount: 1500, percentage: 13.9 },
-      { category: 'Other', amount: 600, percentage: 5.6 },
-    ],
-    totalIncome: 28700,
-    totalExpenses: 20900,
-  },
-  '1y': {
-    trend: [
-      { month: 'Dec', income: 4300, expenses: 3000 },
-      { month: 'Jan', income: 4500, expenses: 3200 },
-      { month: 'Feb', income: 4400, expenses: 3100 },
-      { month: 'Mar', income: 4600, expenses: 3300 },
-      { month: 'Apr', income: 4700, expenses: 3400 },
-      { month: 'May', income: 4500, expenses: 3200 },
-      { month: 'Jun', income: 4500, expenses: 3200 },
-      { month: 'Jul', income: 4800, expenses: 3500 },
-      { month: 'Aug', income: 4500, expenses: 3100 },
-      { month: 'Sep', income: 5000, expenses: 3800 },
-      { month: 'Oct', income: 4700, expenses: 3400 },
-      { month: 'Nov', income: 5200, expenses: 3900 },
-    ],
-    category: [
-      { category: 'Groceries', amount: 5400, percentage: 25 },
-      { category: 'Utilities', amount: 3600, percentage: 16.7 },
-      { category: 'Entertainment', amount: 2400, percentage: 11.1 },
-      { category: 'Transportation', amount: 4200, percentage: 19.4 },
-      { category: 'Healthcare', amount: 1800, percentage: 8.3 },
-      { category: 'Dining', amount: 3000, percentage: 13.9 },
-      { category: 'Other', amount: 1200, percentage: 5.6 },
-    ],
-    totalIncome: 55700,
-    totalExpenses: 40100,
-  },
-};
-
-const balanceData = [
-  { name: 'Main Checking', balance: 5420, type: 'checking' },
-  { name: 'Savings', balance: 12500, type: 'savings' },
-  { name: 'Credit Card', balance: -850, type: 'credit' },
-  { name: 'Investment', balance: 8300, type: 'investment' },
-];
+import { format } from 'date-fns';
 
 type TimePeriod = '1m' | '3m' | '6m' | '1y';
 
 export default function Analytics() {
+  const { accounts, transactions } = useFinance();
+  const { getSpendingByCategory, getTrendData } = useAnalytics();
   const [timePeriod, setTimePeriod] = useState<TimePeriod>('6m');
   
-  const currentData = mockDataByPeriod[timePeriod];
-  const netCashFlow = currentData.totalIncome - currentData.totalExpenses;
-  const savingsRate = ((netCashFlow / currentData.totalIncome) * 100).toFixed(1);
+  // Calculate months based on time period
+  const monthsCount = useMemo(() => {
+    switch (timePeriod) {
+      case '1m': return 1;
+      case '3m': return 3;
+      case '6m': return 6;
+      case '1y': return 12;
+      default: return 6;
+    }
+  }, [timePeriod]);
+
+  // Get trend data for the selected period
+  const trendData = useMemo(() => {
+    const rawData = getTrendData(monthsCount);
+    // Format month from "YYYY-MM" to short month name like "Jun"
+    return rawData.map(item => ({
+      ...item,
+      month: format(new Date(item.month + '-01'), 'MMM'),
+    }));
+  }, [monthsCount, getTrendData]);
+
+  // Calculate date range for category data
+  const { startDate, endDate } = useMemo(() => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth() - monthsCount + 1, 1);
+    return {
+      startDate: start.toISOString(),
+      endDate: now.toISOString(),
+    };
+  }, [monthsCount]);
+
+  // Get category spending data
+  const categoryData = useMemo(() => getSpendingByCategory(startDate, endDate), [startDate, endDate, getSpendingByCategory]);
+
+  // Calculate totals from trend data
+  const totalIncome = useMemo(() => {
+    return trendData.reduce((sum, month) => sum + month.income, 0);
+  }, [trendData]);
+
+  const totalExpenses = useMemo(() => {
+    return trendData.reduce((sum, month) => sum + month.expenses, 0);
+  }, [trendData]);
+
+  const netCashFlow = totalIncome - totalExpenses;
+  const savingsRate = totalIncome > 0 ? ((netCashFlow / totalIncome) * 100).toFixed(1) : '0.0';
+
+  // Calculate account balances
+  const balanceData = useMemo(() => {
+    return accounts.map(account => {
+      const accountTransactions = transactions.filter(t => t.accountId === account.id);
+      const balance = account.initialBalance + accountTransactions.reduce((sum, t) => {
+        return sum + (t.type === 'income' ? t.amount : -t.amount);
+      }, 0);
+      return {
+        name: account.name,
+        balance,
+        type: account.type,
+      };
+    });
+  }, [accounts, transactions]);
 
   return (
     <div className="p-6 space-y-6">
@@ -138,7 +107,7 @@ export default function Analytics() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Total Income</CardDescription>
-            <CardTitle className="text-2xl">${currentData.totalIncome.toLocaleString()}</CardTitle>
+            <CardTitle className="text-2xl">${totalIncome.toLocaleString()}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -151,7 +120,7 @@ export default function Analytics() {
         <Card>
           <CardHeader className="pb-2">
             <CardDescription>Total Expenses</CardDescription>
-            <CardTitle className="text-2xl">${currentData.totalExpenses.toLocaleString()}</CardTitle>
+            <CardTitle className="text-2xl">${totalExpenses.toLocaleString()}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -199,7 +168,13 @@ export default function Analytics() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <TrendChart data={currentData.trend} />
+          {trendData.length > 0 ? (
+            <TrendChart data={trendData} />
+          ) : (
+            <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+              No transaction data available for the selected period
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -213,7 +188,13 @@ export default function Analytics() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <CategoryChart data={currentData.category} />
+            {categoryData.length > 0 ? (
+              <CategoryChart data={categoryData} />
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                No expense data available for the selected period
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -225,7 +206,13 @@ export default function Analytics() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <BalanceChart data={balanceData} />
+            {balanceData.length > 0 ? (
+              <BalanceChart data={balanceData} />
+            ) : (
+              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                No accounts available
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -239,24 +226,30 @@ export default function Analytics() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {currentData.category.map((cat) => (
-              <div key={cat.category} className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span className="font-medium">{cat.category}</span>
+          {categoryData.length > 0 ? (
+            <div className="space-y-4">
+              {categoryData.map((cat) => (
+                <div key={cat.category} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <span className="font-medium">{cat.category}</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">
+                      {cat.percentage.toFixed(1)}%
+                    </span>
+                    <span className="font-semibold min-w-[100px] text-right">
+                      ${cat.amount.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-muted-foreground">
-                    {cat.percentage.toFixed(1)}%
-                  </span>
-                  <span className="font-semibold min-w-[100px] text-right">
-                    ${cat.amount.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              No expense data available for the selected period
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

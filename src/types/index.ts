@@ -83,6 +83,7 @@ export interface FinanceContextType {
   updateRecurringPattern: (id: string, updates: Partial<RecurringPattern>) => void;
   deleteRecurringPattern: (id: string) => void;
   exportData: () => string;
+  exportTransactionsCSV: () => string;
   importData: (data: string, strategy: 'merge' | 'replace') => void;
 }
 
@@ -109,6 +110,7 @@ export interface CategorySpending {
   amount: number;
   percentage: number;
   transactionCount: number;
+  [key: string]: string | number;
 }
 
 export interface TrendData {

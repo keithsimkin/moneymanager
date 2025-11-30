@@ -33,6 +33,8 @@ export interface AccountFormData {
   currency: string;
 }
 
+const CURRENCY_REGEX = /^[A-Z]{3}$/;
+
 export function AccountForm({ open, onOpenChange, onSubmit, account }: AccountFormProps) {
   const [formData, setFormData] = useState<AccountFormData>({
     name: '',
@@ -70,12 +72,25 @@ export function AccountForm({ open, onOpenChange, onSubmit, account }: AccountFo
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof AccountFormData, string>> = {};
 
+    // Validate account name
     if (!formData.name.trim()) {
       newErrors.name = 'Account name is required';
+    } else if (formData.name.trim().length > 100) {
+      newErrors.name = 'Account name must be 100 characters or less';
     }
 
+    // Validate initial balance
     if (isNaN(formData.initialBalance)) {
       newErrors.initialBalance = 'Initial balance must be a valid number';
+    } else if (!isFinite(formData.initialBalance)) {
+      newErrors.initialBalance = 'Initial balance must be a finite number';
+    }
+
+    // Validate currency
+    if (!formData.currency.trim()) {
+      newErrors.currency = 'Currency is required';
+    } else if (!/^[A-Z]{3}$/.test(formData.currency.toUpperCase())) {
+      newErrors.currency = 'Currency must be a 3-letter code (e.g., USD, EUR)';
     }
 
     setErrors(newErrors);
@@ -162,10 +177,14 @@ export function AccountForm({ open, onOpenChange, onSubmit, account }: AccountFo
               <Input
                 id="currency"
                 value={formData.currency}
-                onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, currency: e.target.value.toUpperCase() })}
                 placeholder="USD"
                 maxLength={3}
+                aria-invalid={!!errors.currency}
               />
+              {errors.currency && (
+                <p className="text-sm text-destructive">{errors.currency}</p>
+              )}
             </div>
           </div>
 
