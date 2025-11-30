@@ -29,7 +29,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="border-b">
+    <nav className="border-b" aria-label="Main navigation">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           <div className="flex items-center space-x-6">
@@ -39,11 +39,12 @@ export default function Navigation() {
                 key={item.path}
                 to={item.path}
                 className={cn(
-                  'text-sm font-medium transition-colors hover:text-primary',
+                  'text-sm font-medium transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm',
                   location.pathname === item.path
                     ? 'text-foreground'
                     : 'text-muted-foreground'
                 )}
+                aria-current={location.pathname === item.path ? 'page' : undefined}
               >
                 {item.label}
               </Link>
@@ -53,6 +54,7 @@ export default function Navigation() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
+            aria-label={`Switch theme. Current theme: ${theme}`}
             title={`Current theme: ${theme}`}
           >
             {theme === 'dark' ? (
@@ -60,6 +62,7 @@ export default function Navigation() {
             ) : (
               <Sun className="h-5 w-5" />
             )}
+            <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
       </div>
