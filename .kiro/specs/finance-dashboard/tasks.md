@@ -37,7 +37,9 @@
   - **Property 17: Corrupted data handling**
   - **Validates: Requirements 5.5**
 
-- [-] 4. Install and configure shadcn/ui components
+- [x] 4. Install and configure shadcn/ui components
+
+
 
 
 
@@ -45,41 +47,72 @@
   - Configure component variants and styles
   - _Requirements: All UI requirements_
 
-- [ ] 5. Add routing and navigation
+- [x] 5. Add routing and navigation
+
+
+
+
+
   - Install and configure React Router
   - Set up routes for all pages (Dashboard, Accounts, Transactions, Budgets, Goals, Analytics)
   - Add 404 page
   - _Requirements: All_
 
-- [ ] 6. Create theme context and provider
-- [ ] 6.1 Implement ThemeContext with light/dark/system modes
+- [x] 6. Create theme context and provider
+
+
+
+
+
+- [x] 6.1 Implement ThemeContext with light/dark/system modes
+
   - Create ThemeProvider component
   - Add theme detection and persistence logic
   - Implement theme toggle functionality
   - _Requirements: 11.1, 11.2, 11.3_
 
-- [ ]* 6.2 Write property test for theme persistence
+- [x] 6.2 Write property test for theme persistence
+
+
+
+
+
+
   - **Property 38: Theme persistence**
   - **Validates: Requirements 11.3**
 
-- [ ]* 6.3 Write unit test for system theme detection
+
+
+- [x] 6.3 Write unit test for system theme detection
+
+
+
   - Test that system preference is respected on initial load
   - _Requirements: 11.2_
 
-- [ ] 7. Create layout components
-- [ ] 7.1 Build AppLayout component
+- [x] 7. Create layout components
+
+
+
+- [x] 7.1 Build AppLayout component
+
+
   - Create main layout structure with sidebar and content area
   - Add responsive design for mobile/desktop
   - Integrate theme toggle in header
   - _Requirements: 11.1_
 
-- [ ] 7.2 Build Sidebar component
+- [x] 7.2 Build Sidebar component
+
+
   - Create navigation menu with links to all pages
   - Add active state indicators
   - Implement collapsible sidebar for mobile
   - _Requirements: All_
 
-- [ ] 7.3 Build Header component
+- [x] 7.3 Build Header component
+
+
   - Add app title and branding
   - Implement theme toggle button
   - Add user actions dropdown
