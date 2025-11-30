@@ -6,6 +6,7 @@ import { TransactionList } from '@/components/TransactionList';
 import { FilterBar } from '@/components/FilterBar';
 import { TransactionForm, type TransactionFormData } from '@/components/TransactionForm';
 import { EmptyState } from '@/components/EmptyState';
+import { RecurringTransactionDialog } from '@/components/RecurringTransactionDialog';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -19,11 +20,30 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function Transactions() {
-  const { accounts, transactions, addTransaction, updateTransaction, deleteTransaction } = useFinance();
+  const { 
+    accounts, 
+    transactions, 
+    addTransaction, 
+    updateTransaction, 
+    deleteTransaction,
+    updateRecurringPattern,
+    deleteRecurringPattern
+  } = useFinance();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
   const [deletingTransactionId, setDeletingTransactionId] = useState<string | null>(null);
   const [filters, setFilters] = useState<FilterOptions>({});
+  
+  // State for recurring transaction prompts
+  const [recurringEditDialog, setRecurringEditDialog] = useState<{
+    open: boolean;
+    transaction?: Transaction;
+    formData?: TransactionFormData;
+  }>({ open: false });
+  const [recurringDeleteDialog, setRecurringDeleteDialog] = useState<{
+    open: boolean;
+    transactionId?: string;
+  }>({ open: false });
 
   // Filter transactions based on active filters
   const filteredTransactions = useMemo(() => {
@@ -70,7 +90,14 @@ export default function Transactions() {
   };
 
   const handleDeleteTransaction = (transactionId: string) => {
-    setDeletingTransactionId(transactionId);
+    const transaction = transactions.find(t => t.id === transactionId);
+    
+    // Check if this is a recurring transaction
+    if (transaction?.isRecurring && transaction.recurringId) {
+      setRecurringDeleteDialog({ open: true, transactionId });
+    } else {
+      setDeletingTransactionId(transactionId);
+    }
   };
 
   const confirmDelete = () => {
@@ -80,19 +107,56 @@ export default function Transactions() {
     }
   };
 
+  const handleDeleteThisInstance = () => {
+    if (recurringDeleteDialog.transactionId) {
+      // Just delete this transaction instance
+      deleteTransaction(recurringDeleteDialog.transactionId);
+      setRecurringDeleteDialog({ open: false });
+    }
+  };
+
+  const handleDeleteAllInstances = () => {
+    if (recurringDeleteDialog.transactionId) {
+      const transaction = transactions.find(t => t.id === recurringDeleteDialog.transactionId);
+      
+      if (transaction?.recurringId) {
+        // Delete the recurring pattern
+        deleteRecurringPattern(transaction.recurringId);
+        
+        // Delete all transactions with this recurringId
+        transactions
+          .filter(t => t.recurringId === transaction.recurringId)
+          .forEach(t => deleteTransaction(t.id));
+      }
+      
+      setRecurringDeleteDialog({ open: false });
+    }
+  };
+
   const handleFormSubmit = (data: TransactionFormData) => {
     if (editingTransaction) {
-      // Edit mode
-      updateTransaction(editingTransaction.id, {
-        accountId: data.accountId,
-        amount: data.type === 'income' ? data.amount : -data.amount,
-        description: data.description,
-        category: data.category,
-        date: data.date,
-        type: data.type,
-        isRecurring: data.isRecurring,
-        recurringId: data.recurringId,
-      });
+      // Check if this is a recurring transaction being edited
+      if (editingTransaction.isRecurring && editingTransaction.recurringId) {
+        // Show the recurring edit dialog
+        setRecurringEditDialog({ 
+          open: true, 
+          transaction: editingTransaction,
+          formData: data 
+        });
+        setIsFormOpen(false);
+      } else {
+        // Edit mode - non-recurring or new recurring
+        updateTransaction(editingTransaction.id, {
+          accountId: data.accountId,
+          amount: data.type === 'income' ? data.amount : -data.amount,
+          description: data.description,
+          category: data.category,
+          date: data.date,
+          type: data.type,
+          isRecurring: data.isRecurring,
+          recurringId: data.recurringId,
+        });
+      }
     } else {
       // Create mode
       addTransaction({
@@ -105,6 +169,63 @@ export default function Transactions() {
         isRecurring: data.isRecurring,
         recurringId: data.recurringId,
       });
+    }
+  };
+
+  const handleEditThisInstance = () => {
+    if (recurringEditDialog.transaction && recurringEditDialog.formData) {
+      const data = recurringEditDialog.formData;
+      
+      // Update only this transaction instance, remove recurring link
+      updateTransaction(recurringEditDialog.transaction.id, {
+        accountId: data.accountId,
+        amount: data.type === 'income' ? data.amount : -data.amount,
+        description: data.description,
+        category: data.category,
+        date: data.date,
+        type: data.type,
+        isRecurring: false, // Mark as non-recurring
+        recurringId: undefined, // Remove recurring link
+      });
+      
+      setRecurringEditDialog({ open: false });
+    }
+  };
+
+  const handleEditAllInstances = () => {
+    if (recurringEditDialog.transaction && recurringEditDialog.formData) {
+      const data = recurringEditDialog.formData;
+      const transaction = recurringEditDialog.transaction;
+      
+      if (transaction.recurringId) {
+        // Update the recurring pattern
+        updateRecurringPattern(transaction.recurringId, {
+          accountId: data.accountId,
+          amount: data.type === 'income' ? data.amount : -data.amount,
+          description: data.description,
+          category: data.category,
+          type: data.type,
+        });
+        
+        // Update all future transactions with this recurringId
+        const currentDate = new Date(transaction.date);
+        transactions
+          .filter(t => 
+            t.recurringId === transaction.recurringId && 
+            new Date(t.date) >= currentDate
+          )
+          .forEach(t => {
+            updateTransaction(t.id, {
+              accountId: data.accountId,
+              amount: data.type === 'income' ? data.amount : -data.amount,
+              description: data.description,
+              category: data.category,
+              type: data.type,
+            });
+          });
+      }
+      
+      setRecurringEditDialog({ open: false });
     }
   };
 
@@ -172,7 +293,7 @@ export default function Transactions() {
         transaction={editingTransaction}
       />
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Confirmation Dialog (for non-recurring transactions) */}
       <AlertDialog open={!!deletingTransactionId} onOpenChange={() => setDeletingTransactionId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -187,6 +308,24 @@ export default function Transactions() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Recurring Transaction Edit Dialog */}
+      <RecurringTransactionDialog
+        open={recurringEditDialog.open}
+        onOpenChange={(open) => setRecurringEditDialog({ open })}
+        action="edit"
+        onThisInstance={handleEditThisInstance}
+        onAllInstances={handleEditAllInstances}
+      />
+
+      {/* Recurring Transaction Delete Dialog */}
+      <RecurringTransactionDialog
+        open={recurringDeleteDialog.open}
+        onOpenChange={(open) => setRecurringDeleteDialog({ open })}
+        action="delete"
+        onThisInstance={handleDeleteThisInstance}
+        onAllInstances={handleDeleteAllInstances}
+      />
     </div>
   );
 }

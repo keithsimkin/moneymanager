@@ -6,6 +6,7 @@ import Transactions from './pages/Transactions';
 import Budgets from './pages/Budgets';
 import Goals from './pages/Goals';
 import Analytics from './pages/Analytics';
+import AIChat from './pages/AIChat';
 import NotFound from './pages/NotFound';
 import './App.css';
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/budgets" element={<Budgets />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/ai-chat" element={<AIChat />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>

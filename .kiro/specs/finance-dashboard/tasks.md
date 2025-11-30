@@ -384,26 +384,37 @@
   - Include income vs expense comparison
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [-] 17. Add empty state components
+- [x] 17. Add empty state components
 
 
 
 
 
-- [ ] 17.1 Create empty state UI
+
+
+- [x] 17.1 Create empty state UI
+
   - Build EmptyState component for no data scenarios
   - Add helpful guidance messages
   - Include call-to-action buttons
   - _Requirements: 5.4_
 
-- [ ] 18. Implement recurring transaction UI prompts
-- [ ] 18.1 Add edit/delete prompts for recurring transactions
+- [x] 18. Implement recurring transaction UI prompts
+
+
+
+
+- [x] 18.1 Add edit/delete prompts for recurring transactions
+
+
   - Create dialog for "this instance" vs "all instances" choice
   - Integrate with TransactionForm
   - Use shadcn/ui AlertDialog component
   - _Requirements: 12.4, 12.5_
 
-- [ ] 19. UI Checkpoint - Review and iterate on UI
+- [-] 19. UI Checkpoint - Review and iterate on UI
+
+
   - Test all pages and components with mock data
   - Verify responsive design on mobile and desktop
   - Check theme switching works correctly
@@ -411,6 +422,7 @@
   - Ask the user for feedback on UI/UX
 
 - [ ] 20. Implement custom hooks for accounts
+
 - [ ] 20.1 Create useAccounts hook
   - Implement balance calculation logic
   - Add total balance aggregation

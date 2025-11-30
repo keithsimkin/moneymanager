@@ -7,6 +7,7 @@ import {
   PiggyBank, 
   Target, 
   BarChart3,
+  MessageSquare,
   Menu,
   X
 } from 'lucide-react';
@@ -20,6 +21,7 @@ const navItems = [
   { path: '/budgets', label: 'Budgets', icon: PiggyBank },
   { path: '/goals', label: 'Goals', icon: Target },
   { path: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { path: '/ai-chat', label: 'AI Chat', icon: MessageSquare },
 ];
 
 export default function Sidebar() {

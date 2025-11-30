@@ -11,6 +11,7 @@ const navItems = [
   { path: '/budgets', label: 'Budgets' },
   { path: '/goals', label: 'Goals' },
   { path: '/analytics', label: 'Analytics' },
+  { path: '/ai-chat', label: 'AI Chat' },
 ];
 
 export default function Navigation() {

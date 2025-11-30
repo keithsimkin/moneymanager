@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor, cleanup } from '@testing-library/react';
 import { useState } from 'react';
 import * as fc from 'fast-check';
 import { FinanceProvider, useFinance } from './FinanceContext';
@@ -688,6 +688,7 @@ describe('FinanceContext - Property-Based Tests', () => {
 
         // Clean up
         unmount();
+        cleanup();
         localStorage.clear();
       }),
       { numRuns: 100 } // Run 100 iterations as specified in the design
@@ -887,7 +888,7 @@ describe('FinanceContext - Property-Based Tests', () => {
       amount: fc.double({ min: 0.01, max: 10000, noNaN: true }),
       description: fc.string({ minLength: 1, maxLength: 100 }),
       category: categoryArb,
-      date: fc.date({ min: new Date(2022, 0, 1), max: new Date(2024, 11, 31) }).map(d => d.toISOString()),
+      date: fc.date({ min: new Date(2022, 0, 1), max: new Date(2026, 11, 31) }).map(d => d.toISOString()),
       type: transactionTypeArb,
       isRecurring: fc.boolean(),
     });
