@@ -858,6 +858,7 @@ describe('FinanceContext - Property-Based Tests', () => {
 
         // Clean up
         unmount();
+        cleanup();
         localStorage.clear();
       }),
       { numRuns: 100 } // Run 100 iterations as specified in the design
@@ -1045,6 +1046,7 @@ describe('FinanceContext - Property-Based Tests', () => {
 
         // Clean up
         unmount();
+        cleanup();
         localStorage.clear();
       }),
       { numRuns: 100 } // Run 100 iterations as specified in the design

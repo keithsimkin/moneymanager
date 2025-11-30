@@ -412,7 +412,10 @@
   - Use shadcn/ui AlertDialog component
   - _Requirements: 12.4, 12.5_
 
-- [-] 19. UI Checkpoint - Review and iterate on UI
+- [x] 19. UI Checkpoint - Review and iterate on UI
+
+
+
 
 
   - Test all pages and components with mock data
@@ -421,29 +424,51 @@
   - Ensure all forms and interactions work as expected
   - Ask the user for feedback on UI/UX
 
-- [ ] 20. Implement custom hooks for accounts
+- [x] 20. Implement custom hooks for accounts
 
-- [ ] 20.1 Create useAccounts hook
+
+
+
+
+
+
+- [x] 20.1 Create useAccounts hook
+
+
+
+
   - Implement balance calculation logic
   - Add total balance aggregation
   - Create helper functions for account operations
   - _Requirements: 1.2, 1.5, 2.2_
 
-- [ ] 21. Implement custom hooks for transactions
-- [ ] 21.1 Create useTransactions hook
+- [x] 21. Implement custom hooks for transactions
+
+
+
+- [x] 21.1 Create useTransactions hook
+
+
   - Implement filtering logic (search, date range, category)
   - Add sorting by date
   - Create helper functions for transaction queries
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 22. Implement category filtering
-- [ ] 22.1 Add category filter to TransactionsPage
+- [x] 22. Implement category filtering
+
+
+
+
+- [x] 22.1 Add category filter to TransactionsPage
+
   - Create category dropdown filter
   - Integrate with useTransactions hook
   - _Requirements: 3.5_
 
 - [ ] 23. Implement analytics hook
-- [ ] 23.1 Create useAnalytics hook
+
+- [-] 23.1 Create useAnalytics hook
+
   - Implement monthly income/expense calculations
   - Add net cash flow calculation
   - Create spending by category aggregation
