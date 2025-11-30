@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Plus, TrendingUp } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Goal } from '@/types';
@@ -60,36 +60,36 @@ export default function Goals() {
     return { active, achieved, overdue };
   }, [goals]);
 
-  const handleCreateGoal = () => {
+  const handleCreateGoal = useCallback(() => {
     setFormMode('create');
     setEditingGoal(undefined);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleEditGoal = (goal: Goal) => {
+  const handleEditGoal = useCallback((goal: Goal) => {
     setFormMode('edit');
     setEditingGoal(goal);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleContributeToGoal = (goal: Goal) => {
+  const handleContributeToGoal = useCallback((goal: Goal) => {
     setFormMode('contribute');
     setEditingGoal(goal);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDeleteGoal = (goalId: string) => {
+  const handleDeleteGoal = useCallback((goalId: string) => {
     setDeletingGoalId(goalId);
-  };
+  }, []);
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (deletingGoalId) {
       deleteGoal(deletingGoalId);
       setDeletingGoalId(null);
     }
-  };
+  }, [deletingGoalId, deleteGoal]);
 
-  const handleFormSubmit = (data: GoalFormData) => {
+  const handleFormSubmit = useCallback((data: GoalFormData) => {
     if (formMode === 'edit' && editingGoal) {
       // Edit mode
       updateGoal(editingGoal.id, {
@@ -106,7 +106,7 @@ export default function Goals() {
       // Create mode
       addGoal(data);
     }
-  };
+  }, [formMode, editingGoal, updateGoal, addGoal]);
 
   return (
     <div className="p-6">

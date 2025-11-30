@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Plus, AlertTriangle, AlertCircle, Target } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useBudgets } from '@/hooks/useBudgets';
@@ -29,28 +29,28 @@ export default function Budgets() {
   // Get budget alerts using the hook
   const budgetAlerts = checkBudgetAlerts();
 
-  const handleCreateBudget = () => {
+  const handleCreateBudget = useCallback(() => {
     setEditingBudget(undefined);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleEditBudget = (budget: Budget) => {
+  const handleEditBudget = useCallback((budget: Budget) => {
     setEditingBudget(budget);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDeleteBudget = (budgetId: string) => {
+  const handleDeleteBudget = useCallback((budgetId: string) => {
     setDeletingBudgetId(budgetId);
-  };
+  }, []);
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (deletingBudgetId) {
       deleteBudget(deletingBudgetId);
       setDeletingBudgetId(null);
     }
-  };
+  }, [deletingBudgetId, deleteBudget]);
 
-  const handleFormSubmit = (data: BudgetFormData) => {
+  const handleFormSubmit = useCallback((data: BudgetFormData) => {
     if (editingBudget) {
       // Edit mode
       updateBudget(editingBudget.id, {
@@ -63,7 +63,7 @@ export default function Budgets() {
       // Create mode
       addBudget(data);
     }
-  };
+  }, [editingBudget, updateBudget, addBudget]);
 
   return (
     <div className="p-6">

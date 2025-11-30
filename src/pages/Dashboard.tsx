@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useBudgets } from '@/hooks/useBudgets';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -136,23 +136,23 @@ export default function Dashboard() {
   }, [accountBalances]);
 
   // Get budget alerts using the hook
-  const budgetAlerts = checkBudgetAlerts();
+  const budgetAlerts = useMemo(() => checkBudgetAlerts(), [checkBudgetAlerts]);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
-  };
+  }, []);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = useCallback((dateString: string) => {
     return format(new Date(dateString), 'MMM dd, yyyy');
-  };
+  }, []);
 
-  const getAccountName = (accountId: string) => {
+  const getAccountName = useCallback((accountId: string) => {
     const account = accounts.find(a => a.id === accountId);
     return account?.name || 'Unknown Account';
-  };
+  }, [accounts]);
 
   // Show empty state if no accounts exist
   if (accounts.length === 0) {

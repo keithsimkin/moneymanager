@@ -33,8 +33,6 @@ export interface AccountFormData {
   currency: string;
 }
 
-const CURRENCY_REGEX = /^[A-Z]{3}$/;
-
 export function AccountForm({ open, onOpenChange, onSubmit, account }: AccountFormProps) {
   const [formData, setFormData] = useState<AccountFormData>({
     name: '',

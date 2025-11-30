@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Plus, Receipt, Wallet } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Transaction, FilterOptions } from '@/types';
@@ -79,17 +79,17 @@ export default function Transactions() {
     return result;
   }, [transactions, filters]);
 
-  const handleCreateTransaction = () => {
+  const handleCreateTransaction = useCallback(() => {
     setEditingTransaction(undefined);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleEditTransaction = (transaction: Transaction) => {
+  const handleEditTransaction = useCallback((transaction: Transaction) => {
     setEditingTransaction(transaction);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDeleteTransaction = (transactionId: string) => {
+  const handleDeleteTransaction = useCallback((transactionId: string) => {
     const transaction = transactions.find(t => t.id === transactionId);
     
     // Check if this is a recurring transaction
@@ -98,24 +98,24 @@ export default function Transactions() {
     } else {
       setDeletingTransactionId(transactionId);
     }
-  };
+  }, [transactions]);
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (deletingTransactionId) {
       deleteTransaction(deletingTransactionId);
       setDeletingTransactionId(null);
     }
-  };
+  }, [deletingTransactionId, deleteTransaction]);
 
-  const handleDeleteThisInstance = () => {
+  const handleDeleteThisInstance = useCallback(() => {
     if (recurringDeleteDialog.transactionId) {
       // Just delete this transaction instance
       deleteTransaction(recurringDeleteDialog.transactionId);
       setRecurringDeleteDialog({ open: false });
     }
-  };
+  }, [recurringDeleteDialog.transactionId, deleteTransaction]);
 
-  const handleDeleteAllInstances = () => {
+  const handleDeleteAllInstances = useCallback(() => {
     if (recurringDeleteDialog.transactionId) {
       const transaction = transactions.find(t => t.id === recurringDeleteDialog.transactionId);
       
@@ -131,9 +131,9 @@ export default function Transactions() {
       
       setRecurringDeleteDialog({ open: false });
     }
-  };
+  }, [recurringDeleteDialog.transactionId, transactions, deleteRecurringPattern, deleteTransaction]);
 
-  const handleFormSubmit = (data: TransactionFormData) => {
+  const handleFormSubmit = useCallback((data: TransactionFormData) => {
     if (editingTransaction) {
       // Check if this is a recurring transaction being edited
       if (editingTransaction.isRecurring && editingTransaction.recurringId) {
@@ -170,9 +170,9 @@ export default function Transactions() {
         recurringId: data.recurringId,
       });
     }
-  };
+  }, [editingTransaction, updateTransaction, addTransaction]);
 
-  const handleEditThisInstance = () => {
+  const handleEditThisInstance = useCallback(() => {
     if (recurringEditDialog.transaction && recurringEditDialog.formData) {
       const data = recurringEditDialog.formData;
       
@@ -190,9 +190,9 @@ export default function Transactions() {
       
       setRecurringEditDialog({ open: false });
     }
-  };
+  }, [recurringEditDialog.transaction, recurringEditDialog.formData, updateTransaction]);
 
-  const handleEditAllInstances = () => {
+  const handleEditAllInstances = useCallback(() => {
     if (recurringEditDialog.transaction && recurringEditDialog.formData) {
       const data = recurringEditDialog.formData;
       const transaction = recurringEditDialog.transaction;
@@ -227,11 +227,11 @@ export default function Transactions() {
       
       setRecurringEditDialog({ open: false });
     }
-  };
+  }, [recurringEditDialog.transaction, recurringEditDialog.formData, transactions, updateRecurringPattern, updateTransaction]);
 
-  const handleFilterChange = (newFilters: FilterOptions) => {
+  const handleFilterChange = useCallback((newFilters: FilterOptions) => {
     setFilters(newFilters);
-  };
+  }, []);
 
   return (
     <div className="p-6">
