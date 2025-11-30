@@ -135,7 +135,7 @@ const recurringPatternArb: fc.Arbitrary<RecurringPattern> = fc
     return p;
   });
 
-describe('Storage Round-Trip Property Tests', () => {
+describe('Storage Property Tests', () => {
   beforeEach(() => {
     localStorageMock.clear();
   });
@@ -231,6 +231,243 @@ describe('Storage Round-Trip Property Tests', () => {
         goals: [],
         recurringPatterns: [],
       });
+    });
+  });
+
+  // Feature: finance-dashboard, Property 17: Corrupted data handling
+  describe('Property 17: Corrupted data handling', () => {
+    it('should throw ValidationError when loading corrupted account data with invalid JSON', () => {
+      fc.assert(
+        fc.property(fc.string().filter(s => {
+          // Filter out empty strings and valid JSON
+          if (s === '') return false;
+          try {
+            JSON.parse(s);
+            return false; // Valid JSON, skip
+          } catch {
+            return true; // Invalid JSON, use it
+          }
+        }), (corruptedData) => {
+          localStorage.setItem('finance-dashboard-accounts', corruptedData);
+          expect(() => loadAccounts()).toThrow();
+        }),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading accounts with invalid structure', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            fc.constant(null),
+            fc.constant({}),
+            fc.string({ minLength: 1 }),
+            fc.integer(),
+            fc.boolean(),
+            fc.array(fc.anything(), { minLength: 1 }) // At least one invalid item
+          ),
+          (invalidData) => {
+            localStorage.setItem('finance-dashboard-accounts', JSON.stringify(invalidData));
+            expect(() => loadAccounts()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading transactions with missing required fields', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            // Missing id
+            fc.array(fc.record({
+              accountId: fc.uuid(),
+              amount: fc.double({ noNaN: true, noDefaultInfinity: true }),
+              description: fc.string(),
+              category: fc.string(),
+              date: dateArb,
+              type: transactionTypeArb,
+              isRecurring: fc.boolean(),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }), { minLength: 1, maxLength: 3 }),
+            // Missing accountId
+            fc.array(fc.record({
+              id: fc.uuid(),
+              amount: fc.double({ noNaN: true, noDefaultInfinity: true }),
+              description: fc.string(),
+              category: fc.string(),
+              date: dateArb,
+              type: transactionTypeArb,
+              isRecurring: fc.boolean(),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }), { minLength: 1, maxLength: 3 }),
+            // Missing amount
+            fc.array(fc.record({
+              id: fc.uuid(),
+              accountId: fc.uuid(),
+              description: fc.string(),
+              category: fc.string(),
+              date: dateArb,
+              type: transactionTypeArb,
+              isRecurring: fc.boolean(),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }), { minLength: 1, maxLength: 3 }),
+            // Wrong type for amount
+            fc.array(fc.record({
+              id: fc.uuid(),
+              accountId: fc.uuid(),
+              amount: fc.string(),
+              description: fc.string(),
+              category: fc.string(),
+              date: dateArb,
+              type: transactionTypeArb,
+              isRecurring: fc.boolean(),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }), { minLength: 1, maxLength: 3 })
+          ),
+          (invalidTransactions) => {
+            localStorage.setItem('finance-dashboard-transactions', JSON.stringify(invalidTransactions));
+            expect(() => loadTransactions()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading budgets with invalid period values', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              category: fc.string(),
+              amount: fc.double({ noNaN: true, noDefaultInfinity: true }),
+              period: fc.string().filter(s => !['weekly', 'monthly', 'yearly'].includes(s)),
+              startDate: dateArb,
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (invalidBudgets) => {
+            localStorage.setItem('finance-dashboard-budgets', JSON.stringify(invalidBudgets));
+            expect(() => loadBudgets()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading goals with invalid status values', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              name: fc.string({ minLength: 1 }),
+              targetAmount: fc.double({ min: 0, noNaN: true, noDefaultInfinity: true }),
+              currentAmount: fc.double({ min: 0, noNaN: true, noDefaultInfinity: true }),
+              deadline: dateArb,
+              status: fc.string().filter(s => !['active', 'achieved', 'overdue'].includes(s)),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (invalidGoals) => {
+            localStorage.setItem('finance-dashboard-goals', JSON.stringify(invalidGoals));
+            expect(() => loadGoals()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading recurring patterns with invalid frequency', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              accountId: fc.uuid(),
+              amount: fc.double({ noNaN: true, noDefaultInfinity: true }),
+              description: fc.string({ minLength: 1 }),
+              category: fc.string(),
+              type: transactionTypeArb,
+              frequency: fc.string().filter(s => !['daily', 'weekly', 'monthly', 'yearly'].includes(s)),
+              startDate: dateArb,
+              isActive: fc.boolean(),
+              createdAt: dateArb,
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (invalidPatterns) => {
+            localStorage.setItem('finance-dashboard-recurring-patterns', JSON.stringify(invalidPatterns));
+            expect(() => loadRecurringPatterns()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should throw ValidationError when loading accounts with wrong data types', () => {
+      fc.assert(
+        fc.property(
+          fc.array(
+            fc.record({
+              id: fc.uuid(),
+              name: fc.oneof(fc.integer(), fc.boolean(), fc.constant(null)), // Wrong type
+              type: accountTypeArb,
+              initialBalance: fc.double({ noNaN: true, noDefaultInfinity: true }),
+              currency: fc.constant('USD'),
+              createdAt: dateArb,
+              updatedAt: dateArb,
+            }),
+            { minLength: 1, maxLength: 5 }
+          ),
+          (invalidAccounts) => {
+            localStorage.setItem('finance-dashboard-accounts', JSON.stringify(invalidAccounts));
+            expect(() => loadAccounts()).toThrow();
+          }
+        ),
+        { numRuns: 100 }
+      );
+    });
+
+    it('should not crash the application when encountering corrupted data', () => {
+      fc.assert(
+        fc.property(
+          fc.oneof(
+            fc.constant('{"invalid": json}'),
+            fc.constant('[1, 2, "not an account"]'),
+            fc.constant('null'),
+            fc.constant('undefined'),
+            fc.constant('{broken json'),
+            fc.constant('[{"id": 123}]') // Invalid account structure
+          ),
+          (corruptedData) => {
+            localStorage.setItem('finance-dashboard-accounts', corruptedData);
+            
+            // The function should throw an error but not crash
+            let errorThrown = false;
+            try {
+              loadAccounts();
+            } catch (error) {
+              errorThrown = true;
+              // Verify it's a proper error object
+              expect(error).toBeInstanceOf(Error);
+            }
+            
+            // Should always throw for corrupted data
+            expect(errorThrown).toBe(true);
+          }
+        ),
+        { numRuns: 100 }
+      );
     });
   });
 });
