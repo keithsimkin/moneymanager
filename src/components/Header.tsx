@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { 
   MoonIcon as Moon,
   SunIcon as Sun,
-  EnvelopeIcon as Mail,
-  BellIcon as Bell,
   UserIcon as User,
   ChevronDownIcon as ChevronDown,
-  EllipsisHorizontalIcon as MoreHorizontal,
   CommandLineIcon as Keyboard,
-  ArrowRightOnRectangleIcon as LogOut
+  ArrowRightOnRectangleIcon as LogOut,
+  HomeIcon as Home
 } from '@heroicons/react/24/outline';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -22,12 +20,34 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
 import { ExportImportDialog } from './ExportImportDialog';
+
+const routeLabels: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/accounts': 'Accounts',
+  '/transactions': 'Transactions',
+  '/budgets': 'Budgets',
+  '/goals': 'Goals',
+  '/analytics': 'Analytics',
+  '/advanced-analytics': 'AI Analytics',
+  '/ai-chat': 'AI Chat',
+  '/settings': 'Settings',
+  '/help': 'Help Center',
+};
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [exportImportOpen, setExportImportOpen] = useState(false);
 
   const handleLogout = () => {
@@ -51,11 +71,48 @@ export default function Header() {
     return <Sun className="h-4 w-4" />;
   };
 
+  const getBreadcrumbs = () => {
+    const path = location.pathname;
+    const segments = path.split('/').filter(Boolean);
+    
+    const breadcrumbs = [{ path: '/dashboard', label: 'Home' }];
+    
+    if (segments.length > 0 && segments[0] !== 'dashboard') {
+      const currentPath = `/${segments[0]}`;
+      const label = routeLabels[currentPath] || segments[0];
+      breadcrumbs.push({ path: currentPath, label });
+    }
+    
+    return breadcrumbs;
+  };
+
+  const breadcrumbs = getBreadcrumbs();
+
   return (
     <header className="sticky top-0 z-30 w-full border-b border-gray-200 dark:border-border bg-white dark:bg-background">
       <div className="flex h-14 items-center justify-between px-6 lg:px-8">
         <div className="flex items-center gap-4 ml-12 lg:ml-0">
-          {/* Page title will be rendered by individual pages */}
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumbs.map((crumb, index) => (
+                <div key={crumb.path} className="flex items-center">
+                  {index > 0 && <BreadcrumbSeparator />}
+                  <BreadcrumbItem>
+                    {index === breadcrumbs.length - 1 ? (
+                      <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink asChild>
+                        <Link to={crumb.path} className="flex items-center gap-1">
+                          {index === 0 && <Home className="h-3.5 w-3.5" />}
+                          {crumb.label}
+                        </Link>
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </div>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
 
         <div className="flex items-center gap-2" role="toolbar" aria-label="User actions">
@@ -84,25 +141,6 @@ export default function Header() {
           >
             {getThemeIcon()}
             <span className="sr-only">Toggle theme</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
-            aria-label="Messages"
-          >
-            <Mail className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted relative"
-            aria-label="Notifications"
-          >
-            <Bell className="h-4 w-4" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
           </Button>
 
           <DropdownMenu>
@@ -141,15 +179,6 @@ export default function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-muted"
-            aria-label="More options"
-          >
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 

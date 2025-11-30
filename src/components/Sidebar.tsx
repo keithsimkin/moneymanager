@@ -11,13 +11,12 @@ import {
   ChatBubbleLeftRightIcon as MessageSquare,
   Bars3Icon as Menu,
   XMarkIcon as X,
-  MagnifyingGlassIcon as Search,
   Cog6ToothIcon as Settings,
-  QuestionMarkCircleIcon as HelpCircle
+  QuestionMarkCircleIcon as HelpCircle,
+  ArrowRightStartOnRectangleIcon as LogOut
 } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -77,20 +76,6 @@ export default function Sidebar() {
             <span className="text-lg font-semibold">MoneyManager</span>
           </div>
 
-          {/* Search */}
-          <div className="px-4 py-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input 
-                placeholder="Search" 
-                className="pl-9 h-9 bg-gray-50 dark:bg-muted border-gray-200 dark:border-border text-sm"
-              />
-              <kbd className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-gray-200 dark:border-border bg-white dark:bg-card px-1.5 font-mono text-[10px] font-medium text-gray-400">
-                ⌘K
-              </kbd>
-            </div>
-          </div>
-
           {/* Main Menu */}
           <div className="px-3 py-2">
             <p className="px-3 text-xs font-semibold text-gray-500 dark:text-muted-foreground mb-2">Main Menu</p>
@@ -147,6 +132,14 @@ export default function Sidebar() {
             >
               <Settings className="h-4 w-4" />
               Settings
+            </Link>
+            <Link
+              to="/logout"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
             </Link>
           </div>
         </div>
