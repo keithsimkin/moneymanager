@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   BarChart,
   Bar,
@@ -18,7 +19,7 @@ interface BalanceChartProps {
   data: BalanceData[];
 }
 
-export function BalanceChart({ data }: BalanceChartProps) {
+export const BalanceChart = memo(function BalanceChart({ data }: BalanceChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data}>
@@ -66,4 +67,4 @@ export function BalanceChart({ data }: BalanceChartProps) {
       </BarChart>
     </ResponsiveContainer>
   );
-}
+});

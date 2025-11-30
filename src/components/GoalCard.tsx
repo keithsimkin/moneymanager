@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Edit2, Trash2, Plus, CheckCircle2, Clock } from 'lucide-react';
 import type { Goal } from '@/types';
 import {
@@ -19,7 +20,7 @@ interface GoalCardProps {
   onDelete: (goalId: string) => void;
 }
 
-export function GoalCard({ goal, onContribute, onEdit, onDelete }: GoalCardProps) {
+export const GoalCard = memo(function GoalCard({ goal, onContribute, onEdit, onDelete }: GoalCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -161,4 +162,4 @@ export function GoalCard({ goal, onContribute, onEdit, onDelete }: GoalCardProps
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Plus, Wallet } from 'lucide-react';
 import { useFinance } from '@/contexts/FinanceContext';
 import type { Account } from '@/types';
@@ -24,7 +24,7 @@ export default function Accounts() {
   const [deletingAccountId, setDeletingAccountId] = useState<string | null>(null);
 
   // Calculate balance for each account
-  const calculateBalance = (accountId: string): number => {
+  const calculateBalance = useCallback((accountId: string): number => {
     const account = accounts.find((a) => a.id === accountId);
     if (!account) return 0;
 
@@ -34,37 +34,37 @@ export default function Accounts() {
     }, 0);
 
     return account.initialBalance + transactionTotal;
-  };
+  }, [accounts, transactions]);
 
   // Calculate total balance across all accounts
   const totalBalance = useMemo(() => {
     return accounts.reduce((sum, account) => {
       return sum + calculateBalance(account.id);
     }, 0);
-  }, [accounts, transactions]);
+  }, [accounts, calculateBalance]);
 
-  const handleCreateAccount = () => {
+  const handleCreateAccount = useCallback(() => {
     setEditingAccount(undefined);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleEditAccount = (account: Account) => {
+  const handleEditAccount = useCallback((account: Account) => {
     setEditingAccount(account);
     setIsFormOpen(true);
-  };
+  }, []);
 
-  const handleDeleteAccount = (accountId: string) => {
+  const handleDeleteAccount = useCallback((accountId: string) => {
     setDeletingAccountId(accountId);
-  };
+  }, []);
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (deletingAccountId) {
       deleteAccount(deletingAccountId);
       setDeletingAccountId(null);
     }
-  };
+  }, [deletingAccountId, deleteAccount]);
 
-  const handleFormSubmit = (data: AccountFormData) => {
+  const handleFormSubmit = useCallback((data: AccountFormData) => {
     if (editingAccount) {
       // Edit mode
       updateAccount(editingAccount.id, {
@@ -76,14 +76,14 @@ export default function Accounts() {
       // Create mode
       addAccount(data);
     }
-  };
+  }, [editingAccount, updateAccount, addAccount]);
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = useCallback((amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
-  };
+  }, []);
 
   return (
     <div className="p-6">

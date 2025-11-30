@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import {
   LineChart,
   Line,
@@ -19,7 +20,7 @@ interface TrendChartProps {
   data: TrendData[];
 }
 
-export function TrendChart({ data }: TrendChartProps) {
+export const TrendChart = memo(function TrendChart({ data }: TrendChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart data={data}>
@@ -100,4 +101,4 @@ export function TrendChart({ data }: TrendChartProps) {
       </LineChart>
     </ResponsiveContainer>
   );
-}
+});

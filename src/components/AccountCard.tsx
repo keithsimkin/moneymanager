@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import type { Account } from '@/types';
 import {
@@ -17,7 +18,7 @@ interface AccountCardProps {
   onDelete: (accountId: string) => void;
 }
 
-export function AccountCard({ account, balance, onEdit, onDelete }: AccountCardProps) {
+export const AccountCard = memo(function AccountCard({ account, balance, onEdit, onDelete }: AccountCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -66,4 +67,4 @@ export function AccountCard({ account, balance, onEdit, onDelete }: AccountCardP
       </CardContent>
     </Card>
   );
-}
+});

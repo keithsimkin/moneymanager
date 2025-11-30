@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Edit2, Trash2, AlertTriangle, AlertCircle } from 'lucide-react';
 import type { Budget } from '@/types';
 import {
@@ -19,7 +20,7 @@ interface BudgetCardProps {
   onDelete: (budgetId: string) => void;
 }
 
-export function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps) {
+export const BudgetCard = memo(function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -126,4 +127,4 @@ export function BudgetCard({ budget, spent, onEdit, onDelete }: BudgetCardProps)
       </CardContent>
     </Card>
   );
-}
+});

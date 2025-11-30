@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Edit2, Trash2, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import type { Transaction, Account } from '@/types';
@@ -20,7 +21,7 @@ interface TransactionListProps {
   onDelete: (transactionId: string) => void;
 }
 
-export function TransactionList({
+export const TransactionList = memo(function TransactionList({
   transactions,
   accounts,
   onEdit,
@@ -112,4 +113,4 @@ export function TransactionList({
       </TableBody>
     </Table>
   );
-}
+});

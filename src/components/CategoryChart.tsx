@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import type { CategorySpending } from '@/types';
 
@@ -16,7 +17,7 @@ const COLORS = [
   'hsl(var(--accent))',
 ];
 
-export function CategoryChart({ data }: CategoryChartProps) {
+export const CategoryChart = memo(function CategoryChart({ data }: CategoryChartProps) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <PieChart>
@@ -66,4 +67,4 @@ export function CategoryChart({ data }: CategoryChartProps) {
       </PieChart>
     </ResponsiveContainer>
   );
-}
+});
