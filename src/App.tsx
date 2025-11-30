@@ -6,6 +6,7 @@ import Transactions from './pages/Transactions';
 import Budgets from './pages/Budgets';
 import Goals from './pages/Goals';
 import Analytics from './pages/Analytics';
+import AdvancedAnalytics from './pages/AdvancedAnalytics';
 import AIChat from './pages/AIChat';
 import KeyboardShortcuts from './pages/KeyboardShortcuts';
 import NotFound from './pages/NotFound';
@@ -27,6 +28,7 @@ function AppContent() {
           <Route path="/budgets" element={<Budgets />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/analytics" element={<Analytics />} />
+          <Route path="/advanced-analytics" element={<AdvancedAnalytics />} />
           <Route path="/ai-chat" element={<AIChat />} />
           <Route path="/keyboard-shortcuts" element={<KeyboardShortcuts />} />
           <Route path="*" element={<NotFound />} />

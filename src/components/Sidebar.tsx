@@ -7,6 +7,7 @@ import {
   PiggyBank, 
   Target, 
   BarChart3,
+  Sparkles,
   MessageSquare,
   Menu,
   X,
@@ -26,6 +27,7 @@ const navItems = [
   { path: '/budgets', label: 'Budgets', icon: PiggyBank },
   { path: '/goals', label: 'Goals', icon: Target },
   { path: '/analytics', label: 'Analytics', icon: BarChart3 },
+  { path: '/advanced-analytics', label: 'AI Analytics', icon: Sparkles },
   { path: '/ai-chat', label: 'AI Chat', icon: MessageSquare },
 ];
 
@@ -62,7 +64,7 @@ export default function Sidebar() {
       <aside
         id="sidebar-navigation"
         className={cn(
-          'fixed top-0 left-0 z-40 h-screen w-60 bg-white dark:bg-card border-r border-gray-200 dark:border-border transition-transform duration-300 lg:translate-x-0 lg:static',
+          'fixed top-0 left-0 z-40 h-screen w-60 bg-white dark:bg-card border-r border-gray-200 dark:border-border transition-transform duration-300 lg:translate-x-0 lg:sticky',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
         aria-label="Main navigation"

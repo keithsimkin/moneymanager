@@ -1,21 +1,18 @@
 import { useMemo, useCallback } from 'react';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useBudgets } from '@/hooks/useBudgets';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CategoryChart } from '@/components/CategoryChart';
 import { TrendChart } from '@/components/TrendChart';
-import { BalanceChart } from '@/components/BalanceChart';
 import { EmptyState } from '@/components/EmptyState';
+import { AdvancedInsightsWidget } from '@/components/AdvancedInsightsWidget';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Wallet, 
   TrendingUp, 
   TrendingDown, 
-  DollarSign,
   AlertTriangle,
   AlertCircle,
   LayoutDashboard,
@@ -129,14 +126,7 @@ export default function Dashboard() {
     return months;
   }, [transactions]);
 
-  // Prepare balance chart data
-  const balanceChartData = useMemo(() => {
-    return accountBalances.map(account => ({
-      name: account.name,
-      balance: account.balance,
-      type: account.type,
-    }));
-  }, [accountBalances]);
+
 
   // Get budget alerts using the hook
   const budgetAlerts = useMemo(() => checkBudgetAlerts(), [checkBudgetAlerts]);
@@ -423,7 +413,10 @@ export default function Dashboard() {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-4">
+        {/* AI Insights Widget */}
+        <AdvancedInsightsWidget />
+
         {/* Budget Alerts / Upgrade Card */}
         <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader>
