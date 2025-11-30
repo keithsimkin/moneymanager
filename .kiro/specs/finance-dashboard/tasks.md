@@ -94,6 +94,7 @@
 
 
 
+
 - [x] 7.1 Build AppLayout component
 
 
@@ -118,76 +119,107 @@
   - Add user actions dropdown
   - _Requirements: 11.1_
 
-- [ ] 8. Add predefined categories
-- [ ] 8.1 Create categories constant
+
+- [x] 8. Add predefined categories
+
+
+
+- [x] 8.1 Create categories constant
+
+
   - Define list of predefined categories
   - Export for use in forms and filters
   - _Requirements: 3.1_
 
-- [ ]* 8.2 Write unit test for predefined categories
+- [x] 8.2 Write unit test for predefined categories
+
+
+
+
+
+
   - Verify all required categories exist
   - _Requirements: 3.1_
 
-- [ ] 9. Create finance context and provider (minimal implementation)
-- [ ] 9.1 Implement FinanceContext with state management
+- [x] 9. Create finance context and provider (minimal implementation)
+
+
+
+
+- [x] 9.1 Implement FinanceContext with state management
+
+
   - Create FinanceProvider component with all state (accounts, transactions, budgets, goals, recurring patterns)
   - Implement CRUD operations for all data types
   - Add data persistence on state changes
   - _Requirements: 1.1, 1.3, 1.4, 2.1, 2.4, 2.5, 7.1, 7.5, 8.1, 12.1_
 
-- [ ]* 9.2 Write property test for account creation
+- [x] 9.2 Write property test for account creation
+
+
+
+
+
   - **Property 1: Account creation persistence**
   - **Validates: Requirements 1.1**
 
-- [ ]* 9.3 Write property test for account deletion cascade
+- [x] 9.3 Write property test for account deletion cascade
+
+
+
+
+
+
   - **Property 4: Account deletion cascade**
   - **Validates: Requirements 1.4**
 
-- [ ]* 9.4 Write property test for transaction creation
-  - **Property 6: Transaction creation and association**
-  - **Validates: Requirements 2.1**
+- [x] 10. Create account components
 
-- [ ] 10. Create account components
-- [ ] 10.1 Build AccountCard component
+
+
+
+
+- [x] 10.1 Build AccountCard component
+
+
   - Display account name, type, and balance
   - Add edit and delete action buttons
   - Style with shadcn/ui Card component
   - _Requirements: 1.2_
 
-- [ ]* 10.2 Write property test for account display
-  - **Property 2: Account display completeness**
-  - **Validates: Requirements 1.2**
+- [x] 10.2 Build AccountForm component
 
-- [ ] 10.3 Build AccountForm component
+
   - Create form with name, type, and initial balance fields
   - Add form validation
   - Implement create and edit modes
   - Use shadcn/ui Dialog and Form components
   - _Requirements: 1.1, 1.3_
 
-- [ ]* 10.4 Write property test for account updates
-  - **Property 3: Account update persistence**
-  - **Validates: Requirements 1.3**
+- [x] 10.3 Build AccountsPage component
 
-- [ ] 10.5 Build AccountsPage component
+
   - Display list of all accounts using AccountCard
   - Add "Create Account" button
   - Show total balance summary
   - _Requirements: 1.1, 1.2, 1.5_
 
-- [ ] 11. Create transaction components
-- [ ] 11.1 Build TransactionList component
+- [-] 11. Create transaction components
+
+
+
+- [x] 11.1 Build TransactionList component
+
+
   - Create table with all transaction fields
   - Add edit and delete actions
   - Implement pagination or virtual scrolling
   - Use shadcn/ui Table component
   - _Requirements: 2.3_
 
-- [ ]* 11.2 Write property test for transaction display
-  - **Property 8: Transaction display completeness**
-  - **Validates: Requirements 2.3**
+- [x] 11.2 Build TransactionForm component
 
-- [ ] 11.3 Build TransactionForm component
+
   - Create form with all transaction fields
   - Add category selection dropdown
   - Implement date picker
@@ -195,22 +227,21 @@
   - Use shadcn/ui Dialog and Form components
   - _Requirements: 2.1, 3.2, 12.1_
 
-- [ ]* 11.4 Write property test for category assignment
-  - **Property 9: Category assignment persistence**
-  - **Validates: Requirements 3.2**
+- [-] 11.3 Build FilterBar component
 
-- [ ]* 11.5 Write property test for recurring pattern creation
-  - **Property 40: Recurring pattern creation**
-  - **Validates: Requirements 12.1**
 
-- [ ] 11.6 Build FilterBar component
+
+
+
+
+
   - Add search input with debouncing
   - Create date range picker
   - Add category filter dropdown
   - Implement clear filters button
   - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 11.7 Build TransactionsPage component
+- [ ] 11.4 Build TransactionsPage component
   - Integrate TransactionList and FilterBar
   - Add "Create Transaction" button
   - Show filtered transaction count
@@ -231,11 +262,7 @@
   - Use shadcn/ui Dialog and Form components
   - _Requirements: 7.1_
 
-- [ ]* 12.3 Write property test for budget creation
-  - **Property 23: Budget creation and association**
-  - **Validates: Requirements 7.1**
-
-- [ ] 12.4 Build BudgetsPage component
+- [ ] 12.3 Build BudgetsPage component
   - Display list of all budgets using BudgetCard
   - Add "Create Budget" button
   - Show budget alerts summary
@@ -250,21 +277,13 @@
   - Use shadcn/ui Card and Progress components
   - _Requirements: 8.3, 8.4, 8.5_
 
-- [ ]* 13.2 Write property test for goal display
-  - **Property 28: Goal display completeness**
-  - **Validates: Requirements 8.3**
-
-- [ ] 13.3 Build GoalForm component
+- [ ] 13.2 Build GoalForm component
   - Create form with name, target amount, and deadline fields
   - Add form validation
   - Use shadcn/ui Dialog and Form components
   - _Requirements: 8.1_
 
-- [ ]* 13.4 Write property test for goal creation
-  - **Property 26: Goal creation persistence**
-  - **Validates: Requirements 8.1**
-
-- [ ] 13.5 Build GoalsPage component
+- [ ] 13.3 Build GoalsPage component
   - Display list of all goals using GoalCard
   - Add "Create Goal" button
   - Show goals summary (active, achieved, overdue)
@@ -278,31 +297,19 @@
   - Apply theme-appropriate colors
   - _Requirements: 4.4, 9.2, 9.4, 11.4_
 
-- [ ]* 14.2 Write property test for chart tooltip data
-  - **Property 32: Chart tooltip data completeness**
-  - **Validates: Requirements 9.4**
-
-- [ ]* 14.3 Write property test for chart theme colors
-  - **Property 39: Chart theme adaptation**
-  - **Validates: Requirements 11.4**
-
-- [ ] 14.4 Build TrendChart component
+- [ ] 14.2 Build TrendChart component
   - Implement line chart using Recharts
   - Display income and expense trends over time
   - Add tooltips and legend
   - Apply theme-appropriate colors
   - _Requirements: 9.1, 9.4, 11.4_
 
-- [ ] 14.5 Build BalanceChart component
+- [ ] 14.3 Build BalanceChart component
   - Implement bar chart using Recharts
   - Display account balances comparison
   - Add tooltips with account details
   - Apply theme-appropriate colors
   - _Requirements: 9.3, 9.4, 11.4_
-
-- [ ]* 14.6 Write property test for balance chart data
-  - **Property 31: Balance chart data accuracy**
-  - **Validates: Requirements 9.3**
 
 - [ ] 15. Create dashboard page (with mock data)
 - [ ] 15.1 Build Dashboard component
@@ -327,10 +334,6 @@
   - Include call-to-action buttons
   - _Requirements: 5.4_
 
-- [ ]* 17.2 Write unit test for empty state
-  - Verify empty state displays with no data
-  - _Requirements: 5.4_
-
 - [ ] 18. Implement recurring transaction UI prompts
 - [ ] 18.1 Add edit/delete prompts for recurring transactions
   - Create dialog for "this instance" vs "all instances" choice
@@ -352,14 +355,6 @@
   - Create helper functions for account operations
   - _Requirements: 1.2, 1.5, 2.2_
 
-- [ ]* 20.2 Write property test for balance calculation invariant
-  - **Property 7: Balance calculation invariant**
-  - **Validates: Requirements 2.2, 2.4, 2.5**
-
-- [ ]* 20.3 Write property test for total balance aggregation
-  - **Property 5: Total balance aggregation**
-  - **Validates: Requirements 1.5, 4.1**
-
 - [ ] 21. Implement custom hooks for transactions
 - [ ] 21.1 Create useTransactions hook
   - Implement filtering logic (search, date range, category)
@@ -367,35 +362,11 @@
   - Create helper functions for transaction queries
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ]* 21.2 Write property test for search filtering
-  - **Property 18: Search term filtering**
-  - **Validates: Requirements 6.1**
-
-- [ ]* 21.3 Write property test for date range filtering
-  - **Property 19: Date range filtering**
-  - **Validates: Requirements 6.2**
-
-- [ ]* 21.4 Write property test for compound filters
-  - **Property 20: Compound filter conjunction**
-  - **Validates: Requirements 6.3**
-
-- [ ]* 21.5 Write property test for filter reset
-  - **Property 21: Filter reset completeness**
-  - **Validates: Requirements 6.4**
-
-- [ ]* 21.6 Write property test for sort stability
-  - **Property 22: Sort stability under filtering**
-  - **Validates: Requirements 6.5**
-
 - [ ] 22. Implement category filtering
 - [ ] 22.1 Add category filter to TransactionsPage
   - Create category dropdown filter
   - Integrate with useTransactions hook
   - _Requirements: 3.5_
-
-- [ ]* 22.2 Write property test for category filtering
-  - **Property 11: Category filtering accuracy**
-  - **Validates: Requirements 3.5**
 
 - [ ] 23. Implement analytics hook
 - [ ] 23.1 Create useAnalytics hook
@@ -406,49 +377,12 @@
   - Add recent transactions query
   - _Requirements: 4.2, 4.3, 4.4, 4.5, 3.3, 3.4, 9.1_
 
-- [ ]* 23.2 Write property test for monthly aggregation
-  - **Property 12: Monthly income and expense aggregation**
-  - **Validates: Requirements 4.2**
-
-- [ ]* 23.3 Write property test for net cash flow
-  - **Property 13: Net cash flow calculation**
-  - **Validates: Requirements 4.3**
-
-- [ ]* 23.4 Write property test for category spending
-  - **Property 10: Category spending calculation**
-  - **Validates: Requirements 3.3, 3.4**
-
-- [ ]* 23.5 Write property test for category distribution
-  - **Property 14: Category distribution data accuracy**
-  - **Validates: Requirements 4.4, 9.2**
-
-- [ ]* 23.6 Write property test for recent transactions ordering
-  - **Property 15: Recent transactions ordering**
-  - **Validates: Requirements 4.5**
-
-- [ ]* 23.7 Write property test for trend chart data
-  - **Property 30: Trend chart data accuracy**
-  - **Validates: Requirements 9.1**
-
 - [ ] 24. Implement budgets hook
 - [ ] 24.1 Create useBudgets hook
   - Implement budget progress calculation
   - Add budget alert detection (80% warning, 100% alert)
   - Create active budgets query
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
-
-- [ ]* 24.2 Write property test for budget progress
-  - **Property 24: Budget progress calculation**
-  - **Validates: Requirements 7.2**
-
-- [ ]* 24.3 Write unit tests for budget alerts
-  - Test 80% warning threshold
-  - Test 100% alert threshold
-  - _Requirements: 7.3, 7.4_
-
-- [ ]* 24.4 Write property test for budget recalculation
-  - **Property 25: Budget update recalculation**
-  - **Validates: Requirements 7.5**
 
 - [ ] 25. Implement goals hook
 - [ ] 25.1 Create useGoals hook
@@ -458,28 +392,12 @@
   - Add time remaining calculation
   - _Requirements: 8.2, 8.3, 8.4, 8.5_
 
-- [ ]* 25.2 Write property test for goal contribution
-  - **Property 27: Goal contribution calculation**
-  - **Validates: Requirements 8.2**
-
-- [ ]* 25.3 Write unit test for goal completion
-  - Test that 100% completion marks goal as achieved
-  - _Requirements: 8.4_
-
-- [ ]* 25.4 Write property test for goal status updates
-  - **Property 29: Goal status updates**
-  - **Validates: Requirements 8.5**
-
 - [ ] 26. Implement recurring transactions hook
 - [ ] 26.1 Create useRecurring hook
   - Implement transaction generation logic based on frequency
   - Add due transaction detection
   - Create pattern management functions
   - _Requirements: 12.2, 12.3_
-
-- [ ]* 26.2 Write property test for recurring generation
-  - **Property 41: Recurring transaction generation**
-  - **Validates: Requirements 12.2, 12.3**
 
 - [ ] 27. Implement export/import functionality
 - [ ] 27.1 Create export/import utilities
@@ -488,22 +406,6 @@
   - Create import with merge/replace strategies
   - Add import validation and error handling
   - _Requirements: 10.1, 10.2, 10.3, 10.5_
-
-- [ ]* 27.2 Write property test for export completeness
-  - **Property 33: Export data completeness**
-  - **Validates: Requirements 10.1**
-
-- [ ]* 27.3 Write property test for import integrity
-  - **Property 34: Import data integrity**
-  - **Validates: Requirements 10.2**
-
-- [ ]* 27.4 Write property test for CSV format
-  - **Property 35: CSV export format correctness**
-  - **Validates: Requirements 10.3**
-
-- [ ]* 27.5 Write property test for import error handling
-  - **Property 36: Import error preservation**
-  - **Validates: Requirements 10.5**
 
 - [ ] 28. Implement export/import UI
 - [ ] 28.1 Build ExportImportDialog component
@@ -543,8 +445,7 @@
   - Test with screen reader
   - _Requirements: All UI requirements_
 
-- [ ] 33. Final checkpoint - Ensure all tests pass
-  - Run all unit tests and property tests
-  - Fix any failing tests
+- [ ] 33. Final checkpoint - Review implementation
   - Verify all requirements are met
+  - Test all features end-to-end
   - Ask the user if questions arise

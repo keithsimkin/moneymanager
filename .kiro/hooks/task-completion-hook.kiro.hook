@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Task Completion & Terminal Access",
+  "description": "Reviews all tasks in the project, marks incomplete tasks as done, and ensures terminal commands can be executed",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Please review all tasks in the project workspace. For any tasks that are marked as incomplete or pending, evaluate their status and mark them as done if they have been completed. Additionally, ensure that all terminal commands and scripts are properly configured to run. Provide a summary of tasks updated and confirm terminal access is enabled."
+  }
+}
