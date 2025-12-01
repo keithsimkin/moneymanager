@@ -159,7 +159,7 @@ export default function Dashboard() {
         </div>
         <EmptyState
           icon={LayoutDashboard}
-          title="Welcome to MoneyManager"
+          title="Welcome to cashflow.pilot"
           description="Get started by creating your first account to begin tracking your finances. Once you add accounts and transactions, you'll see your financial overview here."
           actionLabel="Create Your First Account"
           onAction={() => navigate('/accounts')}

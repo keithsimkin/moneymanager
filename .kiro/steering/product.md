@@ -1,6 +1,6 @@
 # Product Overview
 
-MoneyManager is a personal finance management application that helps users track their financial activities. The app provides comprehensive tools for managing accounts, transactions, budgets, and financial goals.
+cashflow.pilot is a personal finance management application that helps users track their financial activities. The app provides comprehensive tools for managing accounts, transactions, budgets, and financial goals.
 
 ## Core Features
 

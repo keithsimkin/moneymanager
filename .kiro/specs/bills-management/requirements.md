@@ -7,8 +7,8 @@ The Bills Management feature enables users to track, manage, and monitor their r
 ## Glossary
 
 - **Bill**: A recurring or one-time financial obligation with a specific amount, due date, and payee
-- **System**: The MoneyManager application
-- **User**: A person using the MoneyManager application
+- **System**: The cashflow.pilot application
+- **User**: A person using the cashflow.pilot application
 - **Due Date**: The date by which a bill payment must be made
 - **Payment Status**: The current state of a bill (unpaid, paid, overdue)
 - **Payee**: The entity or person to whom the bill payment is owed

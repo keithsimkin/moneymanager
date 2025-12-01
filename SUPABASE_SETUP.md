@@ -10,7 +10,7 @@ This app now uses Supabase for authentication instead of localStorage.
 2. Sign up or log in
 3. Click "New Project"
 4. Fill in your project details:
-   - Name: MoneyManager (or your preferred name)
+   - Name: cashflow.pilot (or your preferred name)
    - Database Password: (create a strong password)
    - Region: (choose closest to your users)
 5. Wait for the project to be created (~2 minutes)

@@ -73,7 +73,7 @@ export default function Sidebar() {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
               <Wallet className="h-5 w-5 text-white" />
             </div>
-            <span className="text-lg font-semibold">MoneyManager</span>
+            <span className="text-lg font-semibold">cashflow.pilot</span>
           </div>
 
           {/* Main Menu */}

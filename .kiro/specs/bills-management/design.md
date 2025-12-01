@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Bills Management feature extends the MoneyManager application with dedicated functionality for tracking and managing recurring payment obligations. This feature integrates with the existing transaction system while providing specialized UI and workflows for bill management. The design follows the established patterns in the codebase, using React Context for state management, localStorage for persistence, and the existing component architecture.
+The Bills Management feature extends the cashflow.pilot application with dedicated functionality for tracking and managing recurring payment obligations. This feature integrates with the existing transaction system while providing specialized UI and workflows for bill management. The design follows the established patterns in the codebase, using React Context for state management, localStorage for persistence, and the existing component architecture.
 
 ## Architecture
 

@@ -48,7 +48,7 @@ export default function HelpCenter() {
       category: 'Privacy & Security'
     },
     {
-      question: 'Can I use MoneyManager on multiple devices?',
+      question: 'Can I use cashflow.pilot on multiple devices?',
       answer: 'Since data is stored locally in your browser, each device maintains its own separate data. To sync data between devices, export your data from one device (Settings > Export Data) and import it on another device.',
       category: 'Data Management'
     },
@@ -69,7 +69,7 @@ export default function HelpCenter() {
     },
     {
       question: 'Can I import data from other apps?',
-      answer: 'Currently, MoneyManager supports importing data from JSON backup files created by the app itself. If you have data from another app, you\'ll need to manually enter it or format it to match our JSON structure.',
+      answer: 'Currently, cashflow.pilot supports importing data from JSON backup files created by the app itself. If you have data from another app, you\'ll need to manually enter it or format it to match our JSON structure.',
       category: 'Data Management'
     },
     {
@@ -94,11 +94,11 @@ export default function HelpCenter() {
       id: 'getting-started',
       title: 'Getting Started',
       icon: RocketLaunchIcon,
-      description: 'Learn the basics of MoneyManager',
+      description: 'Learn the basics of cashflow.pilot',
       articles: [
         {
-          title: 'Welcome to MoneyManager',
-          content: 'MoneyManager is a personal finance application that helps you track accounts, transactions, budgets, and financial goals. All data is stored locally in your browser for maximum privacy.'
+          title: 'Welcome to cashflow.pilot',
+          content: 'cashflow.pilot is a personal finance application that helps you track accounts, transactions, budgets, and financial goals. All data is stored locally in your browser for maximum privacy.'
         },
         {
           title: 'Setting Up Your First Account',
@@ -118,7 +118,7 @@ export default function HelpCenter() {
       articles: [
         {
           title: 'Account Types',
-          content: 'MoneyManager supports four account types:\n\n• Checking: For everyday spending\n• Savings: For money you\'re setting aside\n• Credit: For credit cards (negative balances)\n• Investment: For investment accounts'
+          content: 'cashflow.pilot supports four account types:\n\n• Checking: For everyday spending\n• Savings: For money you\'re setting aside\n• Credit: For credit cards (negative balances)\n• Investment: For investment accounts'
         },
         {
           title: 'Editing and Deleting Accounts',
@@ -260,7 +260,7 @@ export default function HelpCenter() {
       <div>
         <h1 className="text-3xl font-bold">Help Center</h1>
         <p className="text-muted-foreground mt-2">
-          Find answers and learn how to use MoneyManager
+          Find answers and learn how to use cashflow.pilot
         </p>
       </div>
 

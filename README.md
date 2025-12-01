@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💰 MoneyManager
+# 💰 cashflow.pilot
 
 ### Modern Personal Finance Management
 
@@ -74,7 +74,7 @@ A powerful, privacy-focused finance tracker built with React and TypeScript. Man
 1. **Clone the repository:**
 ```bash
 git clone <repository-url>
-cd moneymanager
+cd cashflow.pilot
 ```
 
 2. **Install dependencies:**
@@ -106,7 +106,7 @@ pnpm dev
 
 ### 🔐 Supabase Setup (Optional)
 
-MoneyManager works perfectly without Supabase using local storage. However, if you want cloud sync and multi-device access:
+cashflow.pilot works perfectly without Supabase using local storage. However, if you want cloud sync and multi-device access:
 
 1. **Create a Supabase project** at [supabase.com](https://supabase.com)
 
@@ -214,6 +214,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for better financial management**
 
-[⬆ Back to Top](#-moneymanager)
+[⬆ Back to Top](#-cashflowpilot)
 
 </div>

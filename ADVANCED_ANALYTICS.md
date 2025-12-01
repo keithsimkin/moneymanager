@@ -1,6 +1,6 @@
 # Advanced Analytics Features
 
-MoneyManager now includes AI-powered advanced analytics that provide deep insights into your financial health and behavior.
+cashflow.pilot now includes AI-powered advanced analytics that provide deep insights into your financial health and behavior.
 
 ## Features Overview
 

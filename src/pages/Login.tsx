@@ -45,7 +45,7 @@ export default function Login() {
           </CardTitle>
           <CardDescription className="text-gray-600 dark:text-gray-400">
             {isLogin
-              ? 'Sign in to your MoneyManager account'
+              ? 'Sign in to your cashflow.pilot account'
               : 'Sign up to start managing your finances'}
           </CardDescription>
         </CardHeader>

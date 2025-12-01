@@ -36,7 +36,7 @@ export default function Settings() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `moneymanager-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `cashflow-pilot-backup-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -256,7 +256,7 @@ export default function Settings() {
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
           <CardDescription>
-            Customize how MoneyManager looks on your device
+            Customize how cashflow.pilot looks on your device
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
