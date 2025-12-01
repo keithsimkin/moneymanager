@@ -21,33 +21,33 @@ export default function Landing() {
   const services = [
     {
       icon: WalletIcon,
-      title: 'Account Management',
-      description: 'Track all your accounts in one place with real-time balance updates.',
+      title: 'Multi-Account Dashboard',
+      description: 'See all your checking, savings, credit cards, and investments in one unified view.',
     },
     {
       icon: BanknotesIcon,
-      title: 'Transaction Tracking',
-      description: 'Categorize and monitor every transaction automatically.',
+      title: 'Smart Transaction Tracking',
+      description: 'Automatically categorize expenses and income to understand where your money goes.',
     },
     {
       icon: ChartBarIcon,
-      title: 'Budget Planning',
-      description: 'Set spending limits and stay on track with your financial goals.',
+      title: 'Flexible Budget Planning',
+      description: 'Create custom budgets by category with weekly, monthly, or yearly tracking.',
     },
     {
       icon: ArrowTrendingUpIcon,
-      title: 'Financial Analytics',
-      description: 'Visualize trends and insights with powerful charts and reports.',
+      title: 'Visual Analytics',
+      description: 'Beautiful charts and insights reveal spending patterns and help you make better decisions.',
     },
     {
       icon: CalendarIcon,
       title: 'Recurring Transactions',
-      description: 'Automate regular income and expenses for better planning.',
+      description: 'Set up automatic entries for bills, subscriptions, and regular income.',
     },
     {
       icon: ShieldCheckIcon,
-      title: 'Privacy First',
-      description: 'Your data stays local - no cloud storage, complete privacy.',
+      title: 'Privacy by Design',
+      description: 'All data stored locally on your device. No servers, no tracking, no compromises.',
     },
   ];
 
@@ -59,10 +59,17 @@ export default function Landing() {
     }
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-background border-b border-gray-200 dark:border-border">
+      <header className="sticky top-0 z-50 bg-white/95 dark:bg-background/95 backdrop-blur-sm border-b border-gray-200 dark:border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -74,17 +81,29 @@ export default function Landing() {
               </span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
-              <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
+              <button 
+                onClick={() => scrollToSection('hero')}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
+              >
                 Home
               </button>
-              <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
-                About
+              <button 
+                onClick={() => scrollToSection('features')}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
+              >
+                Features
               </button>
-              <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
-                Services
+              <button 
+                onClick={() => scrollToSection('pricing')}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
+              >
+                Pricing
               </button>
-              <button className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium">
-                Contact
+              <button 
+                onClick={() => scrollToSection('technology')}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
+              >
+                Technology
               </button>
             </nav>
             <Button
@@ -98,16 +117,16 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-white dark:bg-background pb-16">
+      <section id="hero" className="bg-white dark:bg-background pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-              The Future of Personal Finance
+              Master Your Money,
               <br />
-              with Latest Technology
+              Own Your Future
             </h1>
             <p className="text-base text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
-              Take control of your finances with powerful tools for budgeting, tracking, and planning. All your data stays private and secure.
+              A powerful, privacy-first finance tracker that helps you budget smarter, save faster, and achieve your financial goals—all without leaving your device.
             </p>
             <div className="flex gap-4 justify-center items-center mb-8">
               <Button
@@ -156,8 +175,8 @@ export default function Landing() {
 
             {/* Users Count Card */}
             <div className="lg:col-span-2 bg-teal-800 dark:bg-teal-900 rounded-2xl p-6 flex flex-col justify-center text-white">
-              <div className="text-5xl font-bold mb-2">100+</div>
-              <div className="text-sm opacity-90 leading-relaxed">Active Users Managing Their Finances</div>
+              <div className="text-5xl font-bold mb-2">100%</div>
+              <div className="text-sm opacity-90 leading-relaxed">Privacy Guaranteed - Your Data Never Leaves</div>
             </div>
 
             {/* Transactions Stats Card */}
@@ -183,8 +202,8 @@ export default function Landing() {
 
             {/* Privacy Badge Card */}
             <div className="lg:col-span-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl p-6 flex flex-col justify-center">
-              <div className="text-5xl font-bold text-emerald-700 dark:text-emerald-400 mb-2">6+</div>
-              <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">Core Features to Manage Your Money</div>
+              <div className="text-5xl font-bold text-emerald-700 dark:text-emerald-400 mb-2">$0</div>
+              <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">Free Forever - All Features Unlocked</div>
             </div>
 
             {/* Productivity Card */}
@@ -192,23 +211,23 @@ export default function Landing() {
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mb-4">
                 <ChartPieIcon className="h-5 w-5" />
               </div>
-              <div className="text-sm leading-relaxed">Achieve Financial Goals with Smart Insights</div>
+              <div className="text-sm leading-relaxed">Smart Insights Drive Better Decisions</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="py-20 sm:py-24 bg-teal-800 dark:bg-teal-900">
+      <section id="features" className="py-20 sm:py-24 bg-teal-800 dark:bg-teal-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Efficient and Integrated
+              Everything You Need to
               <br />
-              Financial Management
+              Take Control of Your Money
             </h2>
             <p className="text-base text-teal-100 max-w-2xl mx-auto">
-              Everything you need to take control of your finances in one powerful, privacy-focused platform
+              From tracking daily expenses to planning long-term goals, cashflow.pilot gives you the tools to build lasting financial wellness
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -259,18 +278,18 @@ export default function Landing() {
             {/* Benefits List */}
             <div>
               <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-5 leading-tight">
-                Key Benefits of Our System for
+                Why People Love
                 <br />
-                Your Financial Efficiency
+                cashflow.pilot
               </h2>
               <p className="text-base text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                Our comprehensive platform helps you track spending, plan budgets, and achieve your financial goals with ease.
+                Simple enough for everyday use, powerful enough for serious financial planning. Get clarity on your money without the complexity.
               </p>
               <div className="space-y-5">
                 {[
-                  { title: 'Streamlined Budget Management', color: 'bg-emerald-500' },
-                  { title: 'Optimization of Spending Patterns', color: 'bg-orange-400' },
-                  { title: 'AI-Driven Financial Insights', color: 'bg-teal-600' },
+                  { title: 'Set budgets and actually stick to them', color: 'bg-emerald-500' },
+                  { title: 'Spot spending patterns before they become problems', color: 'bg-orange-400' },
+                  { title: 'Track progress toward your financial goals', color: 'bg-teal-600' },
                 ].map((benefit) => (
                   <div key={benefit.title} className="flex items-center gap-4">
                     <div className={`w-3 h-3 rounded-full ${benefit.color}`} />
@@ -284,144 +303,178 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 sm:py-24 bg-gray-900 dark:bg-black">
+      <section id="pricing" className="py-20 sm:py-24 bg-gray-900 dark:bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Tailored Plans for Your
+              Free & Open Source
               <br />
-              Financial Journey
+              Forever
             </h2>
             <p className="text-base text-gray-400 max-w-2xl mx-auto">
-              Choose the plan that fits your needs. All plans include complete privacy and local data storage.
+              cashflow.pilot is completely free with all features unlocked. No subscriptions, no hidden costs, just powerful financial management.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Basic Plan */}
-            <div className="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-3xl p-8 sm:p-10">
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-white mb-3">Basic</h3>
-                <p className="text-base text-gray-400 mb-6">Essential features for personal finance tracking</p>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-5xl font-bold text-white">$29</span>
-                  <span className="text-gray-400">/month</span>
+          
+          {/* Single Free Plan Card */}
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-gradient-to-br from-teal-700 to-emerald-600 dark:from-teal-800 dark:to-emerald-700 border-2 border-emerald-400/50 rounded-3xl p-10 sm:p-12 relative overflow-hidden">
+              {/* Decorative elements */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24" />
+              
+              <div className="relative">
+                <div className="flex items-center justify-center mb-6">
+                  <span className="inline-flex items-center px-4 py-2 rounded-full bg-emerald-400/20 text-emerald-100 text-sm font-semibold">
+                    ⭐ 100% Free
+                  </span>
                 </div>
-              </div>
-              <Button 
-                onClick={handleGetStarted} 
-                variant="outline" 
-                className="w-full border-gray-600 text-white hover:bg-gray-700 py-6 rounded-full mb-8 text-base"
-              >
-                Get Started
-              </Button>
-              <div className="space-y-4">
-                {[
-                  'Up to 5 accounts',
-                  'Basic reporting & charts',
-                  'Budget tracking',
-                  'Transaction categorization',
-                ].map((feature) => (
-                  <div key={feature} className="flex items-center gap-3">
-                    <CheckCircleIcon className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-base text-gray-300">{feature}</span>
+                
+                <div className="text-center mb-8">
+                  <h3 className="text-3xl font-bold text-white mb-3">Complete Access</h3>
+                  <p className="text-base text-teal-50 mb-6">
+                    All features included, no limitations
+                  </p>
+                  <div className="flex items-baseline justify-center gap-3 mb-2">
+                    <span className="text-6xl font-bold text-white">$0</span>
+                    <span className="text-teal-100 text-xl">/forever</span>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <p className="text-sm text-teal-100/80">Open source & privacy-focused</p>
+                </div>
 
-            {/* Professional Plan */}
-            <div className="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-3xl p-8 sm:p-10">
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-white mb-3">Professional</h3>
-                <p className="text-base text-gray-400 mb-6">Advanced features for comprehensive financial management</p>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-5xl font-bold text-white">$99</span>
-                  <span className="text-gray-400">/month</span>
+                <Button 
+                  onClick={handleGetStarted} 
+                  className="w-full bg-white hover:bg-gray-100 text-teal-800 py-6 rounded-full mb-10 text-lg font-semibold shadow-xl"
+                >
+                  Start Using Now
+                </Button>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {[
+                    'Unlimited accounts',
+                    'Advanced analytics & insights',
+                    'Budget tracking & planning',
+                    'Goal tracking & forecasting',
+                    'Transaction categorization',
+                    'Recurring transactions',
+                    'Export & import data',
+                    'Complete privacy (local storage)',
+                    'Dark mode support',
+                    'Keyboard shortcuts',
+                    'No ads, ever',
+                    'Open source code',
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-center gap-3">
+                      <CheckCircleIcon className="h-5 w-5 text-emerald-300 flex-shrink-0" />
+                      <span className="text-sm text-white">{feature}</span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <Button 
-                onClick={handleGetStarted} 
-                variant="outline" 
-                className="w-full border-gray-600 text-white hover:bg-gray-700 py-6 rounded-full mb-8 text-base"
-              >
-                Get Started
-              </Button>
-              <div className="space-y-4">
-                {[
-                  'Unlimited accounts',
-                  'Advanced analytics & insights',
-                  'Goal tracking & forecasting',
-                  'Recurring transactions',
-                  'Export & import data',
-                ].map((feature) => (
-                  <div key={feature} className="flex items-center gap-3">
-                    <CheckCircleIcon className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-base text-gray-300">{feature}</span>
-                  </div>
-                ))}
+
+                <div className="mt-10 pt-8 border-t border-white/20 text-center">
+                  <p className="text-teal-50 text-sm">
+                    💚 Built with love for the community. No tracking, no data collection, just pure financial management.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Enterprise CTA */}
-          <div className="mt-10 bg-teal-700 dark:bg-teal-800 rounded-3xl p-8 sm:p-10 text-center max-w-5xl mx-auto">
-            <h3 className="text-2xl font-bold text-white mb-3">Professional</h3>
-            <p className="text-base text-teal-50 mb-6 max-w-2xl mx-auto">
-              Actually, cashflow.pilot is completely free and open source! All features are available to everyone.
+          {/* Optional: Cloud Sync Info */}
+          <div className="mt-12 text-center max-w-2xl mx-auto">
+            <p className="text-gray-400 text-sm">
+              Want to sync across devices? You can optionally configure your own Supabase instance for free cloud sync.
+              <br />
+              <button 
+                onClick={() => window.open('https://supabase.com', '_blank')}
+                className="text-teal-400 hover:text-teal-300 underline mt-2 inline-block"
+              >
+                Learn about Supabase integration →
+              </button>
             </p>
-            <Button 
-              onClick={handleGetStarted} 
-              className="bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-3 rounded-full text-base"
-            >
-              Start Using Free
-            </Button>
           </div>
         </div>
       </section>
 
       {/* Integrations Section */}
-      <section className="py-20 sm:py-24 bg-emerald-50 dark:bg-emerald-950/20">
+      <section id="technology" className="py-20 sm:py-24 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-cyan-950/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-5 leading-tight">
-                Empowering Users
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
+            <div className="max-w-xl">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                Built with Modern
                 <br />
-                with Seamless Technology
+                Web Technology
               </h2>
               <p className="text-base text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                Built with modern web technologies for a fast, reliable, and privacy-focused experience. Your data never leaves your device.
+                Lightning-fast performance, beautiful design, and rock-solid reliability. Built with the same tools used by the world's best apps.
               </p>
               <Button 
                 onClick={handleGetStarted} 
-                className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full text-base"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-full text-base shadow-lg shadow-emerald-500/30"
               >
                 Learn More
               </Button>
             </div>
             
-            {/* Tech Stack Visualization */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-200 to-teal-200 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-3xl blur-3xl opacity-50" />
-              <div className="relative grid grid-cols-3 gap-4">
-                {[
-                  { name: 'React', color: 'bg-blue-500', icon: '⚛️' },
-                  { name: 'TypeScript', color: 'bg-blue-600', icon: 'TS' },
-                  { name: 'Tailwind', color: 'bg-teal-500', icon: '🎨' },
-                  { name: 'Vite', color: 'bg-purple-500', icon: '⚡' },
-                  { name: 'Recharts', color: 'bg-emerald-500', icon: '📊' },
-                  { name: 'Radix UI', color: 'bg-gray-700', icon: '🎯' },
-                ].map((tech) => (
-                  <div 
-                    key={tech.name} 
-                    className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border hover:shadow-lg transition-shadow"
-                  >
-                    <div className={`w-14 h-14 rounded-xl ${tech.color} flex items-center justify-center text-2xl`}>
-                      {tech.icon}
-                    </div>
-                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">{tech.name}</span>
-                  </div>
-                ))}
+            {/* Right - Tech Stack Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Row 1 */}
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-blue-500 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236 2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278-1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03-.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624 1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38-.318-.184-.688-.277-1.092-.278zm-.005 1.09v.006c.225 0 .406.044.558.127.666.382.955 1.835.73 3.704-.054.46-.142.945-.25 1.44-.96-.236-2.006-.417-3.107-.534-.66-.905-1.345-1.727-2.035-2.447 1.592-1.48 3.087-2.292 4.105-2.295zm-9.77.02c1.012 0 2.514.808 4.11 2.28-.686.72-1.37 1.537-2.02 2.442-1.107.117-2.154.298-3.113.538-.112-.49-.195-.964-.254-1.42-.23-1.868.054-3.32.714-3.707.19-.09.4-.127.563-.132zm4.882 3.05c.455.468.91.992 1.36 1.564-.44-.02-.89-.034-1.345-.034-.46 0-.915.01-1.36.034.44-.572.895-1.096 1.345-1.565zM12 8.1c.74 0 1.477.034 2.202.093.406.582.802 1.203 1.183 1.86.372.64.71 1.29 1.018 1.946-.308.655-.646 1.31-1.013 1.95-.38.66-.773 1.288-1.18 1.87-.728.063-1.466.098-2.21.098-.74 0-1.477-.035-2.202-.093-.406-.582-.802-1.204-1.183-1.86-.372-.64-.71-1.29-1.018-1.946.303-.657.646-1.313 1.013-1.954.38-.66.773-1.286 1.18-1.868.728-.064 1.466-.098 2.21-.098zm-3.635.254c-.24.377-.48.763-.704 1.16-.225.39-.435.782-.635 1.174-.265-.656-.49-1.31-.676-1.947.64-.15 1.315-.283 2.015-.386zm7.26 0c.695.103 1.365.23 2.006.387-.18.632-.405 1.282-.66 1.933-.2-.39-.41-.783-.64-1.174-.225-.392-.465-.774-.705-1.146zm3.063.675c.484.15.944.317 1.375.498 1.732.74 2.852 1.708 2.852 2.476-.005.768-1.125 1.74-2.857 2.475-.42.18-.88.342-1.355.493-.28-.958-.646-1.956-1.1-2.98.45-1.017.81-2.01 1.085-2.964zm-13.395.004c.278.96.645 1.957 1.1 2.98-.45 1.017-.812 2.01-1.086 2.964-.484-.15-.944-.318-1.37-.5-1.732-.737-2.852-1.706-2.852-2.474 0-.768 1.12-1.742 2.852-2.476.42-.18.88-.342 1.356-.494zm11.678 4.28c.265.657.49 1.312.676 1.948-.64.157-1.316.29-2.016.39.24-.375.48-.762.705-1.158.225-.39.435-.788.636-1.18zm-9.945.02c.2.392.41.783.64 1.175.23.39.465.772.705 1.143-.695-.102-1.365-.23-2.006-.386.18-.63.406-1.282.66-1.933zM17.92 16.32c.112.493.2.968.254 1.423.23 1.868-.054 3.32-.714 3.708-.147.09-.338.128-.563.128-1.012 0-2.514-.807-4.11-2.28.686-.72 1.37-1.536 2.02-2.44 1.107-.118 2.154-.3 3.113-.54zm-11.83.01c.96.234 2.006.415 3.107.532.66.905 1.345 1.727 2.035 2.446-1.595 1.483-3.092 2.295-4.11 2.295-.22-.005-.406-.05-.553-.132-.666-.38-.955-1.834-.73-3.703.054-.46.142-.944.25-1.438zm4.56.64c.44.02.89.034 1.345.034.46 0 .915-.01 1.36-.034-.44.572-.895 1.095-1.345 1.565-.455-.47-.91-.993-1.36-1.565z"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">React</span>
+              </div>
+
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center">
+                  <span className="text-white font-bold text-2xl">TS</span>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">TypeScript</span>
+              </div>
+
+              {/* Row 2 */}
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-teal-500 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">Tailwind</span>
+              </div>
+
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-purple-500 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14.257 3.955c-1.46-2.013-4.054-2.013-5.514 0L.53 17.05c-1.46 2.013-.365 4.95 1.757 4.95h16.426c2.122 0 3.217-2.937 1.757-4.95L14.257 3.955zm-2.757 14.045a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm1-4a1 1 0 0 1-2 0V9a1 1 0 0 1 2 0v5z"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">Vite</span>
+              </div>
+
+              {/* Row 3 */}
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <path d="M3 9h18M9 21V9"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">Recharts</span>
+              </div>
+
+              <div className="bg-white dark:bg-card rounded-2xl p-6 flex flex-col items-center justify-center gap-3 border border-gray-200 dark:border-border shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-16 h-16 rounded-2xl bg-gray-700 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10"/>
+                    <circle cx="12" cy="12" r="4" fill="white"/>
+                  </svg>
+                </div>
+                <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">Radix UI</span>
               </div>
             </div>
           </div>
@@ -432,10 +485,10 @@ export default function Landing() {
       <section className="py-20 sm:py-24 bg-teal-800 dark:bg-teal-900">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-5">
-            From Idea to Financial Control in Minutes
+            Ready to Take Control of Your Finances?
           </h2>
           <p className="text-base text-teal-50 mb-8 max-w-2xl mx-auto">
-            Start managing your finances today with our powerful, privacy-focused platform. No signup required.
+            Start tracking, budgeting, and planning today. No signup, no credit card, no strings attached.
           </p>
           <Button 
             onClick={handleGetStarted} 
