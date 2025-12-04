@@ -122,6 +122,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
 
     if (storageMode === 'supabase' && user) {
       await createAccountSupabase(newAccount);
+      setAccounts((prev) => [...prev, newAccount]);
     } else {
       setAccounts((prev) => {
         const updated = [...prev, newAccount];
@@ -129,9 +130,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    // Update local state for immediate UI feedback
-    setAccounts((prev) => [...prev, newAccount]);
   }, [storageMode, user]);
 
   const updateAccount = useCallback(async (id: string, updates: Partial<Account>) => {
@@ -139,6 +137,11 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     
     if (storageMode === 'supabase' && user) {
       await updateAccountSupabase(id, updatedData);
+      setAccounts((prev) =>
+        prev.map((account) =>
+          account.id === id ? { ...account, ...updatedData } : account
+        )
+      );
     } else {
       setAccounts((prev) => {
         const updated = prev.map((account) =>
@@ -148,19 +151,13 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    // Update local state for immediate UI feedback
-    setAccounts((prev) =>
-      prev.map((account) =>
-        account.id === id ? { ...account, ...updatedData } : account
-      )
-    );
   }, [storageMode, user]);
 
   const deleteAccount = useCallback(async (id: string) => {
     if (storageMode === 'supabase' && user) {
       await deleteAccountSupabase(id);
-      // Transactions will be cascade deleted by database
+      setAccounts((prev) => prev.filter((account) => account.id !== id));
+      setTransactions((prev) => prev.filter((transaction) => transaction.accountId !== id));
     } else {
       setAccounts((prev) => {
         const updated = prev.filter((account) => account.id !== id);
@@ -173,10 +170,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    // Update local state for immediate UI feedback
-    setAccounts((prev) => prev.filter((account) => account.id !== id));
-    setTransactions((prev) => prev.filter((transaction) => transaction.accountId !== id));
   }, [storageMode, user]);
 
   // Transaction operations
@@ -190,6 +183,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
 
     if (storageMode === 'supabase' && user) {
       await createTransactionSupabase(newTransaction);
+      setTransactions((prev) => [...prev, newTransaction]);
     } else {
       setTransactions((prev) => {
         const updated = [...prev, newTransaction];
@@ -197,8 +191,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setTransactions((prev) => [...prev, newTransaction]);
   }, [storageMode, user]);
 
   const updateTransaction = useCallback(async (id: string, updates: Partial<Transaction>) => {
@@ -206,6 +198,11 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     
     if (storageMode === 'supabase' && user) {
       await updateTransactionSupabase(id, updatedData);
+      setTransactions((prev) =>
+        prev.map((transaction) =>
+          transaction.id === id ? { ...transaction, ...updatedData } : transaction
+        )
+      );
     } else {
       setTransactions((prev) => {
         const updated = prev.map((transaction) =>
@@ -215,17 +212,12 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setTransactions((prev) =>
-      prev.map((transaction) =>
-        transaction.id === id ? { ...transaction, ...updatedData } : transaction
-      )
-    );
   }, [storageMode, user]);
 
   const deleteTransaction = useCallback(async (id: string) => {
     if (storageMode === 'supabase' && user) {
       await deleteTransactionSupabase(id);
+      setTransactions((prev) => prev.filter((transaction) => transaction.id !== id));
     } else {
       setTransactions((prev) => {
         const updated = prev.filter((transaction) => transaction.id !== id);
@@ -233,8 +225,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setTransactions((prev) => prev.filter((transaction) => transaction.id !== id));
   }, [storageMode, user]);
 
   // Budget operations
@@ -248,6 +238,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
 
     if (storageMode === 'supabase' && user) {
       await createBudgetSupabase(newBudget);
+      setBudgets((prev) => [...prev, newBudget]);
     } else {
       setBudgets((prev) => {
         const updated = [...prev, newBudget];
@@ -255,8 +246,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setBudgets((prev) => [...prev, newBudget]);
   }, [storageMode, user]);
 
   const updateBudget = useCallback(async (id: string, updates: Partial<Budget>) => {
@@ -264,6 +253,11 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     
     if (storageMode === 'supabase' && user) {
       await updateBudgetSupabase(id, updatedData);
+      setBudgets((prev) =>
+        prev.map((budget) =>
+          budget.id === id ? { ...budget, ...updatedData } : budget
+        )
+      );
     } else {
       setBudgets((prev) => {
         const updated = prev.map((budget) =>
@@ -273,17 +267,12 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setBudgets((prev) =>
-      prev.map((budget) =>
-        budget.id === id ? { ...budget, ...updatedData } : budget
-      )
-    );
   }, [storageMode, user]);
 
   const deleteBudget = useCallback(async (id: string) => {
     if (storageMode === 'supabase' && user) {
       await deleteBudgetSupabase(id);
+      setBudgets((prev) => prev.filter((budget) => budget.id !== id));
     } else {
       setBudgets((prev) => {
         const updated = prev.filter((budget) => budget.id !== id);
@@ -291,8 +280,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setBudgets((prev) => prev.filter((budget) => budget.id !== id));
   }, [storageMode, user]);
 
   // Goal operations
@@ -306,6 +293,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
 
     if (storageMode === 'supabase' && user) {
       await createGoalSupabase(newGoal);
+      setGoals((prev) => [...prev, newGoal]);
     } else {
       setGoals((prev) => {
         const updated = [...prev, newGoal];
@@ -313,8 +301,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setGoals((prev) => [...prev, newGoal]);
   }, [storageMode, user]);
 
   const updateGoal = useCallback(async (id: string, updates: Partial<Goal>) => {
@@ -322,6 +308,11 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     
     if (storageMode === 'supabase' && user) {
       await updateGoalSupabase(id, updatedData);
+      setGoals((prev) =>
+        prev.map((goal) =>
+          goal.id === id ? { ...goal, ...updatedData } : goal
+        )
+      );
     } else {
       setGoals((prev) => {
         const updated = prev.map((goal) =>
@@ -331,17 +322,12 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setGoals((prev) =>
-      prev.map((goal) =>
-        goal.id === id ? { ...goal, ...updatedData } : goal
-      )
-    );
   }, [storageMode, user]);
 
   const deleteGoal = useCallback(async (id: string) => {
     if (storageMode === 'supabase' && user) {
       await deleteGoalSupabase(id);
+      setGoals((prev) => prev.filter((goal) => goal.id !== id));
     } else {
       setGoals((prev) => {
         const updated = prev.filter((goal) => goal.id !== id);
@@ -349,8 +335,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setGoals((prev) => prev.filter((goal) => goal.id !== id));
   }, [storageMode, user]);
 
   // Recurring pattern operations
@@ -363,6 +347,7 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
 
     if (storageMode === 'supabase' && user) {
       await createRecurringPatternSupabase(newPattern);
+      setRecurringPatterns((prev) => [...prev, newPattern]);
     } else {
       setRecurringPatterns((prev) => {
         const updated = [...prev, newPattern];
@@ -370,13 +355,16 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setRecurringPatterns((prev) => [...prev, newPattern]);
   }, [storageMode, user]);
 
   const updateRecurringPattern = useCallback(async (id: string, updates: Partial<RecurringPattern>) => {
     if (storageMode === 'supabase' && user) {
       await updateRecurringPatternSupabase(id, updates);
+      setRecurringPatterns((prev) =>
+        prev.map((pattern) =>
+          pattern.id === id ? { ...pattern, ...updates } : pattern
+        )
+      );
     } else {
       setRecurringPatterns((prev) => {
         const updated = prev.map((pattern) =>
@@ -386,17 +374,12 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setRecurringPatterns((prev) =>
-      prev.map((pattern) =>
-        pattern.id === id ? { ...pattern, ...updates } : pattern
-      )
-    );
   }, [storageMode, user]);
 
   const deleteRecurringPattern = useCallback(async (id: string) => {
     if (storageMode === 'supabase' && user) {
       await deleteRecurringPatternSupabase(id);
+      setRecurringPatterns((prev) => prev.filter((pattern) => pattern.id !== id));
     } else {
       setRecurringPatterns((prev) => {
         const updated = prev.filter((pattern) => pattern.id !== id);
@@ -404,8 +387,6 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
         return updated;
       });
     }
-    
-    setRecurringPatterns((prev) => prev.filter((pattern) => pattern.id !== id));
   }, [storageMode, user]);
 
   // Export/Import operations
