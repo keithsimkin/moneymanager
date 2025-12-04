@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFinance } from '@/contexts/FinanceContext';
-import { useAI } from '@/contexts/AIContext';
+import { useAI, OPENROUTER_MODELS } from '@/contexts/AIContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -17,7 +17,8 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   EyeIcon,
-  EyeSlashIcon
+  EyeSlashIcon,
+  ArrowTopRightOnSquareIcon
 } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 
@@ -98,36 +99,45 @@ export default function Settings() {
         </p>
       </div>
 
-      {/* AI Configuration */}
+      {/* AI Configuration - OpenRouter */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <SparklesIcon className="h-5 w-5" />
-            AI Assistant Configuration
+            AI Assistant (OpenRouter)
           </CardTitle>
           <CardDescription>
-            Connect your own AI API to enhance the financial assistant
+            Connect to OpenRouter to access multiple AI models with a single API key
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
-            <div>
-              <Label htmlFor="ai-provider" className="text-base">AI Provider</Label>
-              <select
-                id="ai-provider"
-                value={config.provider}
-                onChange={(e) => updateConfig({ provider: e.target.value as any })}
-                className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-              >
-                <option value="openai">OpenAI (GPT-4, GPT-3.5)</option>
-                <option value="anthropic">Anthropic (Claude)</option>
-                <option value="google">Google (Gemini)</option>
-                <option value="local">Local/Custom Endpoint</option>
-              </select>
+            {/* OpenRouter Info */}
+            <div className="rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-900">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                    What is OpenRouter?
+                  </p>
+                  <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
+                    OpenRouter provides unified access to GPT-4, Claude, Gemini, Llama, and more through a single API.
+                  </p>
+                </div>
+                <a
+                  href="https://openrouter.ai/keys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:underline whitespace-nowrap"
+                >
+                  Get API Key
+                  <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+                </a>
+              </div>
             </div>
 
+            {/* API Key Input */}
             <div>
-              <Label htmlFor="api-key" className="text-base">API Key</Label>
+              <Label htmlFor="api-key" className="text-base">OpenRouter API Key</Label>
               <div className="mt-2 flex gap-2">
                 <div className="relative flex-1">
                   <Input
@@ -135,7 +145,7 @@ export default function Settings() {
                     type={showApiKey ? 'text' : 'password'}
                     value={config.apiKey}
                     onChange={(e) => updateConfig({ apiKey: e.target.value })}
-                    placeholder="sk-..."
+                    placeholder="sk-or-v1-..."
                     className="pr-10"
                   />
                   <button
@@ -174,65 +184,40 @@ export default function Settings() {
               {connectionStatus === 'error' && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
                   <XCircleIcon className="h-4 w-4" />
-                  Connection failed
+                  Connection failed - check your API key
                 </div>
               )}
             </div>
 
-            {config.provider === 'openai' && (
-              <div>
-                <Label htmlFor="model" className="text-base">Model</Label>
-                <select
-                  id="model"
-                  value={config.model}
-                  onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                  <option value="gpt-4">GPT-4</option>
-                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
-                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                </select>
-              </div>
-            )}
-
-            {config.provider === 'anthropic' && (
-              <div>
-                <Label htmlFor="model" className="text-base">Model</Label>
-                <select
-                  id="model"
-                  value={config.model}
-                  onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                  <option value="claude-3-opus">Claude 3 Opus</option>
-                  <option value="claude-3-sonnet">Claude 3 Sonnet</option>
-                  <option value="claude-3-haiku">Claude 3 Haiku</option>
-                </select>
-              </div>
-            )}
-
-            {config.provider === 'google' && (
-              <div>
-                <Label htmlFor="model" className="text-base">Model</Label>
-                <select
-                  id="model"
-                  value={config.model}
-                  onChange={(e) => updateConfig({ model: e.target.value })}
-                  className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                >
-                  <option value="gemini-pro">Gemini Pro</option>
-                  <option value="gemini-ultra">Gemini Ultra</option>
-                </select>
-              </div>
-            )}
-
-            <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-900">
-              <p className="text-sm text-amber-900 dark:text-amber-100">
-                <strong>Note:</strong> Your API key is stored locally in your browser and never sent to our servers. 
-                API calls are made directly from your browser to the AI provider.
+            {/* Model Selection */}
+            <div>
+              <Label htmlFor="model" className="text-base">AI Model</Label>
+              <select
+                id="model"
+                value={config.model}
+                onChange={(e) => updateConfig({ model: e.target.value })}
+                className="mt-2 w-full rounded-md border border-gray-200 dark:border-border bg-white dark:bg-card px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+              >
+                {OPENROUTER_MODELS.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {model.name} ({model.provider})
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Different models have different capabilities and pricing. GPT-4o Mini is a good balance of cost and quality.
               </p>
             </div>
 
+            {/* Security Note */}
+            <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-900">
+              <p className="text-sm text-amber-900 dark:text-amber-100">
+                <strong>Privacy:</strong> Your API key is stored locally in your browser and never sent to our servers. 
+                API calls are made directly from your browser to OpenRouter.
+              </p>
+            </div>
+
+            {/* Enable Toggle */}
             <div className="flex items-center justify-between pt-2">
               <div>
                 <Label className="text-base">Enable AI Features</Label>
@@ -243,6 +228,7 @@ export default function Settings() {
               <Button
                 onClick={() => updateConfig({ enabled: !config.enabled })}
                 variant={config.enabled ? "default" : "outline"}
+                disabled={!config.apiKey}
               >
                 {config.enabled ? 'Enabled' : 'Disabled'}
               </Button>

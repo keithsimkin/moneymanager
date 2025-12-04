@@ -1,14 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   PaperAirplaneIcon as Send,
   CpuChipIcon as Bot,
   UserIcon as User,
-  ArrowPathIcon as Loader2
+  ArrowPathIcon as Loader2,
+  Cog6ToothIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useFinance } from '@/contexts/FinanceContext';
+import { useAI } from '@/contexts/AIContext';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -16,14 +20,18 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
+  isError?: boolean;
 }
 
 export default function AIChat() {
+  const { config, sendMessage, isConfigured } = useAI();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: crypto.randomUUID(),
       role: 'assistant',
-      content: "Hi! I'm your financial assistant. I can help you analyze your spending, budgets, goals, and transactions. What would you like to know?",
+      content: isConfigured 
+        ? "Hi! I'm your AI financial assistant powered by OpenRouter. I can help you analyze your spending, budgets, goals, and transactions. What would you like to know?"
+        : "Hi! I'm your financial assistant. To unlock AI-powered insights, please configure your OpenRouter API key in Settings. For now, I can answer basic questions about your finances.",
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -142,6 +150,57 @@ export default function AIChat() {
     return "I can help you with information about your balance, spending, income, budgets, goals, accounts, transactions, or give you a financial summary. What would you like to know?";
   };
 
+  // Build financial context for AI
+  const buildFinancialContext = () => {
+    const totalBalance = accounts.reduce((sum, acc) => {
+      const accountTransactions = transactions.filter(t => t.accountId === acc.id);
+      const balance = acc.initialBalance + accountTransactions.reduce((s, t) => s + t.amount, 0);
+      return sum + balance;
+    }, 0);
+
+    const totalIncome = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const totalExpenses = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
+    const categorySpending = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((acc, t) => {
+        acc[t.category] = (acc[t.category] || 0) + Math.abs(t.amount);
+        return acc;
+      }, {} as Record<string, number>);
+
+    const budgetStatus = budgets.map(budget => {
+      const spent = transactions
+        .filter(t => t.type === 'expense' && t.category === budget.category)
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      return { category: budget.category, spent, limit: budget.amount, percentage: Math.round((spent / budget.amount) * 100) };
+    });
+
+    return `
+Financial Summary:
+- Total Balance: $${totalBalance.toFixed(2)}
+- Total Income: $${totalIncome.toFixed(2)}
+- Total Expenses: $${totalExpenses.toFixed(2)}
+- Net: $${(totalIncome - totalExpenses).toFixed(2)}
+- Accounts: ${accounts.length} (${accounts.map(a => `${a.name}: ${a.type}`).join(', ')})
+- Active Budgets: ${budgets.length}
+- Active Goals: ${goals.filter(g => g.status === 'active').length}
+
+Spending by Category:
+${Object.entries(categorySpending).map(([cat, amt]) => `- ${cat}: $${amt.toFixed(2)}`).join('\n')}
+
+Budget Status:
+${budgetStatus.map(b => `- ${b.category}: $${b.spent.toFixed(2)} / $${b.limit.toFixed(2)} (${b.percentage}%)`).join('\n')}
+
+Goals:
+${goals.map(g => `- ${g.name}: $${g.currentAmount.toFixed(2)} / $${g.targetAmount.toFixed(2)} (${g.status})`).join('\n')}
+    `.trim();
+  };
+
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -156,19 +215,51 @@ export default function AIChat() {
     setInput('');
     setIsLoading(true);
 
-    // Simulate AI processing delay
-    setTimeout(() => {
-      const response = generateResponse(userMessage.content);
-      const assistantMessage: Message = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: response,
-        timestamp: new Date().toISOString(),
-      };
+    // Use OpenRouter API if configured, otherwise fall back to local responses
+    if (isConfigured) {
+      try {
+        const chatHistory = messages
+          .filter(m => !m.isError)
+          .map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+        
+        chatHistory.push({ role: 'user', content: userMessage.content });
 
-      setMessages(prev => [...prev, assistantMessage]);
-      setIsLoading(false);
-    }, 500);
+        const response = await sendMessage(chatHistory, buildFinancialContext());
+        
+        const assistantMessage: Message = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: response,
+          timestamp: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+      } catch (error) {
+        const errorMessage: Message = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: error instanceof Error ? error.message : 'Sorry, something went wrong. Please try again.',
+          timestamp: new Date().toISOString(),
+          isError: true,
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
+    } else {
+      // Fall back to local response generation
+      setTimeout(() => {
+        const response = generateResponse(userMessage.content);
+        const assistantMessage: Message = {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: response,
+          timestamp: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+      }, 500);
+    }
+    
+    setIsLoading(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -180,12 +271,43 @@ export default function AIChat() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">AI Financial Assistant</h1>
-        <p className="text-muted-foreground mt-2">
-          Ask questions about your finances and get instant insights
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">AI Financial Assistant</h1>
+          <p className="text-muted-foreground mt-2">
+            Ask questions about your finances and get instant insights
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isConfigured ? (
+            <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2 py-1 rounded-full">
+              {config.model.split('/')[1] || config.model}
+            </span>
+          ) : (
+            <Link to="/settings">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Cog6ToothIcon className="h-4 w-4" />
+                Configure AI
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
+
+      {!isConfigured && (
+        <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-900 flex items-start gap-3">
+          <ExclamationTriangleIcon className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+              AI features are limited
+            </p>
+            <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">
+              Add your <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="underline">OpenRouter API key</a> in{' '}
+              <Link to="/settings" className="underline">Settings</Link> to unlock AI-powered insights with GPT-4, Claude, Gemini, and more.
+            </p>
+          </div>
+        </div>
+      )}
 
       <Card className="flex flex-col h-[calc(100vh-16rem)]">
         {/* Messages Area */}
@@ -208,6 +330,8 @@ export default function AIChat() {
                   'rounded-lg px-4 py-2 max-w-[80%] whitespace-pre-wrap',
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
+                    : message.isError
+                    ? 'bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-200 border border-red-200 dark:border-red-900'
                     : 'bg-muted'
                 )}
               >
