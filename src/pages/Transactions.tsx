@@ -1,13 +1,14 @@
 import { useState, useMemo, useCallback } from 'react';
 import { PlusIcon as Plus, ReceiptPercentIcon as Receipt, WalletIcon as Wallet } from '@heroicons/react/24/outline';
 import { useFinance } from '@/contexts/FinanceContext';
-import type { Transaction, FilterOptions } from '@/types';
+import type { Transaction } from '@/types';
 import { TransactionList } from '@/components/TransactionList';
-import { FilterBar } from '@/components/FilterBar';
+import { AdvancedFilterBar } from '@/components/AdvancedFilterBar';
 import { TransactionForm, type TransactionFormData } from '@/components/TransactionForm';
 import { EmptyState } from '@/components/EmptyState';
 import { RecurringTransactionDialog } from '@/components/RecurringTransactionDialog';
 import { Button } from '@/components/ui/button';
+import { applyAdvancedFilters, type AdvancedFilterOptions } from '@/utils/advancedFilters';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +33,7 @@ export default function Transactions() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
   const [deletingTransactionId, setDeletingTransactionId] = useState<string | null>(null);
-  const [filters, setFilters] = useState<FilterOptions>({});
+  const [filters, setFilters] = useState<AdvancedFilterOptions>({});
   
   // State for recurring transaction prompts
   const [recurringEditDialog, setRecurringEditDialog] = useState<{
@@ -47,32 +48,8 @@ export default function Transactions() {
 
   // Filter transactions based on active filters
   const filteredTransactions = useMemo(() => {
-    let result = [...transactions];
-
-    // Apply search term filter
-    if (filters.searchTerm) {
-      const searchLower = filters.searchTerm.toLowerCase();
-      result = result.filter((t) =>
-        t.description.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Apply category filter
-    if (filters.category) {
-      result = result.filter((t) => t.category === filters.category);
-    }
-
-    // Apply date range filter
-    if (filters.startDate) {
-      const startDate = new Date(filters.startDate);
-      result = result.filter((t) => new Date(t.date) >= startDate);
-    }
-
-    if (filters.endDate) {
-      const endDate = new Date(filters.endDate);
-      result = result.filter((t) => new Date(t.date) <= endDate);
-    }
-
+    const result = applyAdvancedFilters(transactions, filters);
+    
     // Sort by date (most recent first)
     result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
@@ -229,7 +206,7 @@ export default function Transactions() {
     }
   }, [recurringEditDialog.transaction, recurringEditDialog.formData, transactions, updateRecurringPattern, updateTransaction]);
 
-  const handleFilterChange = useCallback((newFilters: FilterOptions) => {
+  const handleFilterChange = useCallback((newFilters: AdvancedFilterOptions) => {
     setFilters(newFilters);
   }, []);
 
@@ -248,9 +225,9 @@ export default function Transactions() {
         </Button>
       </div>
 
-      {/* Filter Bar */}
+      {/* Advanced Filter Bar */}
       <div className="mb-6">
-        <FilterBar onFilterChange={handleFilterChange} />
+        <AdvancedFilterBar onFilterChange={handleFilterChange} />
       </div>
 
       {/* Filtered Transaction Count */}

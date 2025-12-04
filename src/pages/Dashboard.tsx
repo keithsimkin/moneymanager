@@ -1,14 +1,20 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useBudgets } from '@/hooks/useBudgets';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { TrendChart } from '@/components/TrendChart';
 import { EmptyState } from '@/components/EmptyState';
 import { AdvancedInsightsWidget } from '@/components/AdvancedInsightsWidget';
+import { AdvancedFilterBar } from '@/components/AdvancedFilterBar';
 import { Badge } from '@/components/ui/badge';
-import { format } from 'date-fns';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { format, startOfWeek, endOfWeek, startOfYear, endOfYear } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowTrendingUpIcon as TrendingUp,
@@ -16,13 +22,19 @@ import {
   ExclamationTriangleIcon as AlertTriangle,
   ExclamationCircleIcon as AlertCircle,
   Squares2X2Icon as LayoutDashboard,
-  MagnifyingGlassIcon as Search
+  ArrowDownTrayIcon as Download
 } from '@heroicons/react/24/outline';
+import { applyAdvancedFilters, type AdvancedFilterOptions } from '@/utils/advancedFilters';
+
+type TimePeriod = 'weekly' | 'monthly' | 'yearly';
 
 export default function Dashboard() {
   const { accounts, transactions } = useFinance();
   const { checkBudgetAlerts, getBudgetProgress } = useBudgets();
   const navigate = useNavigate();
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>('monthly');
+  const [filters, setFilters] = useState<AdvancedFilterOptions>({});
+  const [showFilters, setShowFilters] = useState(false);
 
   // Calculate account balances
   const accountBalances = useMemo(() => {
@@ -40,45 +52,59 @@ export default function Dashboard() {
     return accountBalances.reduce((sum, account) => sum + account.balance, 0);
   }, [accountBalances]);
 
-  // Get current month transactions
-  const currentMonthTransactions = useMemo(() => {
+  // Get current period transactions based on selected time period
+  const currentPeriodTransactions = useMemo(() => {
     const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
     
     return transactions.filter(t => {
       const transactionDate = new Date(t.date);
-      return transactionDate.getMonth() === currentMonth && 
-             transactionDate.getFullYear() === currentYear;
+      
+      if (timePeriod === 'weekly') {
+        const weekStart = startOfWeek(now);
+        const weekEnd = endOfWeek(now);
+        return transactionDate >= weekStart && transactionDate <= weekEnd;
+      } else if (timePeriod === 'monthly') {
+        return transactionDate.getMonth() === now.getMonth() && 
+               transactionDate.getFullYear() === now.getFullYear();
+      } else { // yearly
+        const yearStart = startOfYear(now);
+        const yearEnd = endOfYear(now);
+        return transactionDate >= yearStart && transactionDate <= yearEnd;
+      }
     });
-  }, [transactions]);
+  }, [transactions, timePeriod]);
 
-  // Calculate monthly income and expenses
-  const monthlyIncome = useMemo(() => {
-    return currentMonthTransactions
+  // Calculate period income and expenses
+  const periodIncome = useMemo(() => {
+    return currentPeriodTransactions
       .filter(t => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
-  }, [currentMonthTransactions]);
+  }, [currentPeriodTransactions]);
 
-  const monthlyExpenses = useMemo(() => {
-    return currentMonthTransactions
+  const periodExpenses = useMemo(() => {
+    return currentPeriodTransactions
       .filter(t => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
-  }, [currentMonthTransactions]);
+  }, [currentPeriodTransactions]);
 
   // Calculate net cash flow
-  const netCashFlow = monthlyIncome - monthlyExpenses;
+  const netCashFlow = periodIncome - periodExpenses;
 
-  // Get recent transactions (last 5)
+  // Apply filters to transactions
+  const filteredTransactions = useMemo(() => {
+    return applyAdvancedFilters(transactions, filters);
+  }, [transactions, filters]);
+
+  // Get recent transactions (last 5) from filtered results
   const recentTransactions = useMemo(() => {
-    return [...transactions]
+    return [...filteredTransactions]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5);
-  }, [transactions]);
+  }, [filteredTransactions]);
 
   // Prepare category chart data
   const categoryChartData = useMemo(() => {
-    const expenseTransactions = currentMonthTransactions.filter(t => t.type === 'expense');
+    const expenseTransactions = currentPeriodTransactions.filter(t => t.type === 'expense');
     const categoryTotals = expenseTransactions.reduce((acc, t) => {
       const existing = acc[t.category] || { amount: 0, count: 0 };
       acc[t.category] = {
@@ -96,7 +122,7 @@ export default function Dashboard() {
       percentage: total > 0 ? (data.amount / total) * 100 : 0,
       transactionCount: data.count,
     }));
-  }, [currentMonthTransactions]);
+  }, [currentPeriodTransactions]);
 
   // Prepare trend chart data (last 6 months)
   const trendChartData = useMemo(() => {
@@ -147,6 +173,42 @@ export default function Dashboard() {
     return account?.name || 'Unknown Account';
   }, [accounts]);
 
+  // Download dashboard data as JSON
+  const handleDownload = useCallback(() => {
+    const dashboardData = {
+      exportDate: new Date().toISOString(),
+      timePeriod,
+      appliedFilters: filters,
+      summary: {
+        totalBalance,
+        periodIncome,
+        periodExpenses,
+        netCashFlow,
+        savingsRate: periodIncome > 0 ? ((netCashFlow / periodIncome) * 100).toFixed(2) : '0',
+      },
+      accounts: accountBalances,
+      transactions: filteredTransactions,
+      categoryBreakdown: categoryChartData,
+      trendData: trendChartData,
+      budgetAlerts,
+    };
+
+    const blob = new Blob([JSON.stringify(dashboardData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `dashboard-${timePeriod}-${format(new Date(), 'yyyy-MM-dd')}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [timePeriod, filters, totalBalance, periodIncome, periodExpenses, netCashFlow, accountBalances, filteredTransactions, categoryChartData, trendChartData, budgetAlerts]);
+
+  // Get period label
+  const getPeriodLabel = useCallback(() => {
+    return timePeriod.charAt(0).toUpperCase() + timePeriod.slice(1);
+  }, [timePeriod]);
+
   // Show empty state if no accounts exist
   if (accounts.length === 0) {
     return (
@@ -176,17 +238,60 @@ export default function Dashboard() {
           <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">
-          <Button variant="outline" size="sm" className="h-8 sm:h-9 gap-2 text-xs sm:text-sm">
-            <span>Monthly</span>
-            <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 sm:h-9 gap-2 text-xs sm:text-sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
+            <span className="hidden sm:inline">Filters</span>
+            {Object.keys(filters).length > 0 && (
+              <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1">
+                {Object.keys(filters).length}
+              </Badge>
+            )}
           </Button>
-          <Button size="sm" className="h-8 sm:h-9 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm">
-            Download
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 sm:h-9 gap-2 text-xs sm:text-sm">
+                <span>{getPeriodLabel()}</span>
+                <svg className="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setTimePeriod('weekly')}>
+                Weekly
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTimePeriod('monthly')}>
+                Monthly
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTimePeriod('yearly')}>
+                Yearly
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button 
+            size="sm" 
+            className="h-8 sm:h-9 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm gap-2"
+            onClick={handleDownload}
+          >
+            <Download className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Download</span>
           </Button>
         </div>
       </div>
+
+      {/* Advanced Filter Bar */}
+      {showFilters && (
+        <div className="bg-white dark:bg-card border border-gray-200 dark:border-border rounded-lg p-4">
+          <AdvancedFilterBar onFilterChange={setFilters} showAdvanced={true} />
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -222,9 +327,9 @@ export default function Dashboard() {
         <Card className="bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <p className="text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase">Monthly Income</p>
+              <p className="text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase">{getPeriodLabel()} Income</p>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-semibold text-gray-900 dark:text-white">{formatCurrency(monthlyIncome)}</span>
+                <span className="text-2xl font-semibold text-gray-900 dark:text-white">{formatCurrency(periodIncome)}</span>
                 <span className="text-xs font-medium text-green-600 dark:text-green-500 flex items-center gap-0.5">
                   <TrendingUp className="h-3 w-3" />
                   0.4%
@@ -239,8 +344,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-              <span className="font-medium">+{formatCurrency(monthlyIncome * 0.004)}</span>
-              <span>from last month</span>
+              <span className="font-medium">+{formatCurrency(periodIncome * 0.004)}</span>
+              <span>from last period</span>
               <svg className="h-4 w-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -253,7 +358,7 @@ export default function Dashboard() {
             <div>
               <p className="text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase">Total Expenses</p>
               <div className="flex items-baseline gap-2 mt-1">
-                <span className="text-2xl font-semibold text-gray-900 dark:text-white">{formatCurrency(monthlyExpenses)}</span>
+                <span className="text-2xl font-semibold text-gray-900 dark:text-white">{formatCurrency(periodExpenses)}</span>
                 <span className="text-xs font-medium text-green-600 dark:text-green-500 flex items-center gap-0.5">
                   <TrendingUp className="h-3 w-3" />
                   0.5%
@@ -268,8 +373,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-              <span className="font-medium">+{formatCurrency(monthlyExpenses * 0.005)}</span>
-              <span>from last month</span>
+              <span className="font-medium">+{formatCurrency(periodExpenses * 0.005)}</span>
+              <span>from last period</span>
               <svg className="h-4 w-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -283,7 +388,7 @@ export default function Dashboard() {
               <p className="text-xs font-medium text-gray-500 dark:text-muted-foreground uppercase">Savings Rate</p>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="text-2xl font-semibold text-gray-900 dark:text-white">
-                  {monthlyIncome > 0 ? ((netCashFlow / monthlyIncome) * 100).toFixed(0) : 0}%
+                  {periodIncome > 0 ? ((netCashFlow / periodIncome) * 100).toFixed(0) : 0}%
                 </span>
                 <span className="text-xs font-medium text-red-600 dark:text-red-500 flex items-center gap-0.5">
                   <TrendingDown className="h-3 w-3" />
@@ -301,7 +406,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
               <span className="font-medium">-10.2%</span>
-              <span>from last month</span>
+              <span>from last period</span>
               <svg className="h-4 w-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
@@ -386,7 +491,7 @@ export default function Dashboard() {
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600 dark:text-gray-400">Transactions</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{currentMonthTransactions.length}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{currentPeriodTransactions.length}</span>
               </div>
               <div className="w-full bg-gray-100 dark:bg-muted rounded-full h-1.5">
                 <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: '6%' }}></div>
@@ -481,17 +586,20 @@ export default function Dashboard() {
         <Card className="col-span-full lg:col-span-2 bg-white dark:bg-card border-gray-200 dark:border-border">
           <CardHeader>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <CardTitle className="text-base font-semibold text-gray-900 dark:text-white">Recent Transactions</CardTitle>
+              <div>
+                <CardTitle className="text-base font-semibold text-gray-900 dark:text-white">Recent Transactions</CardTitle>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Showing {recentTransactions.length} of {filteredTransactions.length} filtered transactions
+                </p>
+              </div>
               <div className="flex items-center gap-2">
-                <div className="relative flex-1 sm:flex-none">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
-                  <Input 
-                    placeholder="Search..." 
-                    className="pl-9 h-8 w-full sm:w-48 lg:w-64 bg-gray-50 dark:bg-muted border-gray-200 dark:border-border text-sm"
-                  />
-                </div>
-                <Button variant="ghost" size="sm" className="h-8 text-xs text-gray-600 dark:text-gray-400 hidden sm:flex">
-                  Refresh
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 text-xs"
+                  onClick={() => navigate('/transactions')}
+                >
+                  View All
                 </Button>
               </div>
             </div>
