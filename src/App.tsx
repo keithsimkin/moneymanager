@@ -17,6 +17,7 @@ import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { KeyboardShortcutsDialog } from './components/KeyboardShortcutsDialog';
+import { MobileAppComingSoon } from './components/MobileAppComingSoon';
 import { useGlobalKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import './App.css';
 
@@ -142,6 +143,7 @@ function AppContent() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <KeyboardShortcutsDialog />
+      <MobileAppComingSoon />
     </>
   );
 }
