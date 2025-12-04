@@ -10,17 +10,37 @@ import type {
 } from '../types';
 import {
   loadAllData,
-  saveAccounts,
-  saveTransactions,
-  saveBudgets,
-  saveGoals,
-  saveRecurringPatterns,
+  saveAccounts as saveAccountsLocal,
+  saveTransactions as saveTransactionsLocal,
+  saveBudgets as saveBudgetsLocal,
+  saveGoals as saveGoalsLocal,
+  saveRecurringPatterns as saveRecurringPatternsLocal,
   exportToJSON,
   importFromJSON,
   exportTransactionsToCSV,
   StorageError,
   ValidationError,
 } from '../utils/storage';
+import {
+  fetchAllFromSupabase,
+  createAccount as createAccountSupabase,
+  updateAccount as updateAccountSupabase,
+  deleteAccount as deleteAccountSupabase,
+  createTransaction as createTransactionSupabase,
+  updateTransaction as updateTransactionSupabase,
+  deleteTransaction as deleteTransactionSupabase,
+  createBudget as createBudgetSupabase,
+  updateBudget as updateBudgetSupabase,
+  deleteBudget as deleteBudgetSupabase,
+  createGoal as createGoalSupabase,
+  updateGoal as updateGoalSupabase,
+  deleteGoal as deleteGoalSupabase,
+  createRecurringPattern as createRecurringPatternSupabase,
+  updateRecurringPattern as updateRecurringPatternSupabase,
+  deleteRecurringPattern as deleteRecurringPatternSupabase,
+} from '../utils/supabaseStorage';
+import { useStorage } from './StorageContext';
+import { useAuth } from './AuthContext';
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 
@@ -39,6 +59,9 @@ function getCurrentTimestamp(): string {
 }
 
 export function FinanceProvider({ children }: FinanceProviderProps) {
+  const { storageMode } = useStorage();
+  const { user } = useAuth();
+  
   // State for all data types
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -47,34 +70,49 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
   const [recurringPatterns, setRecurringPatterns] = useState<RecurringPattern[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load data from storage on mount
+  // Load data from storage on mount or when storage mode changes
   useEffect(() => {
-    try {
-      const data = loadAllData();
-      setAccounts(data.accounts);
-      setTransactions(data.transactions);
-      setBudgets(data.budgets);
-      setGoals(data.goals);
-      setRecurringPatterns(data.recurringPatterns);
-      setIsLoaded(true);
-    } catch (error) {
-      if (error instanceof StorageError || error instanceof ValidationError) {
-        console.error('Failed to load data from storage:', error);
-        // Initialize with empty state on error
-        setAccounts([]);
-        setTransactions([]);
-        setBudgets([]);
-        setGoals([]);
-        setRecurringPatterns([]);
+    async function loadData() {
+      try {
+        if (storageMode === 'supabase' && user) {
+          // Load from Supabase
+          const data = await fetchAllFromSupabase();
+          setAccounts(data.accounts);
+          setTransactions(data.transactions);
+          setBudgets(data.budgets);
+          setGoals(data.goals);
+          setRecurringPatterns(data.recurringPatterns);
+        } else {
+          // Load from localStorage
+          const data = loadAllData();
+          setAccounts(data.accounts);
+          setTransactions(data.transactions);
+          setBudgets(data.budgets);
+          setGoals(data.goals);
+          setRecurringPatterns(data.recurringPatterns);
+        }
         setIsLoaded(true);
-      } else {
-        throw error;
+      } catch (error) {
+        if (error instanceof StorageError || error instanceof ValidationError) {
+          console.error('Failed to load data from storage:', error);
+          // Initialize with empty state on error
+          setAccounts([]);
+          setTransactions([]);
+          setBudgets([]);
+          setGoals([]);
+          setRecurringPatterns([]);
+          setIsLoaded(true);
+        } else {
+          console.error('Error loading data:', error);
+          setIsLoaded(true);
+        }
       }
     }
-  }, []);
+    loadData();
+  }, [storageMode, user]);
 
   // Account operations
-  const addAccount = useCallback((accountData: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addAccount = useCallback(async (accountData: Omit<Account, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newAccount: Account = {
       ...accountData,
       id: generateId(),
@@ -82,42 +120,67 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
       updatedAt: getCurrentTimestamp(),
     };
 
-    setAccounts((prev) => {
-      const updated = [...prev, newAccount];
-      saveAccounts(updated);
-      return updated;
-    });
-  }, []);
+    if (storageMode === 'supabase' && user) {
+      await createAccountSupabase(newAccount);
+    } else {
+      setAccounts((prev) => {
+        const updated = [...prev, newAccount];
+        saveAccountsLocal(updated);
+        return updated;
+      });
+    }
+    
+    // Update local state for immediate UI feedback
+    setAccounts((prev) => [...prev, newAccount]);
+  }, [storageMode, user]);
 
-  const updateAccount = useCallback((id: string, updates: Partial<Account>) => {
-    setAccounts((prev) => {
-      const updated = prev.map((account) =>
-        account.id === id
-          ? { ...account, ...updates, updatedAt: getCurrentTimestamp() }
-          : account
-      );
-      saveAccounts(updated);
-      return updated;
-    });
-  }, []);
+  const updateAccount = useCallback(async (id: string, updates: Partial<Account>) => {
+    const updatedData = { ...updates, updatedAt: getCurrentTimestamp() };
+    
+    if (storageMode === 'supabase' && user) {
+      await updateAccountSupabase(id, updatedData);
+    } else {
+      setAccounts((prev) => {
+        const updated = prev.map((account) =>
+          account.id === id ? { ...account, ...updatedData } : account
+        );
+        saveAccountsLocal(updated);
+        return updated;
+      });
+    }
+    
+    // Update local state for immediate UI feedback
+    setAccounts((prev) =>
+      prev.map((account) =>
+        account.id === id ? { ...account, ...updatedData } : account
+      )
+    );
+  }, [storageMode, user]);
 
-  const deleteAccount = useCallback((id: string) => {
-    // Delete account and all associated transactions
-    setAccounts((prev) => {
-      const updated = prev.filter((account) => account.id !== id);
-      saveAccounts(updated);
-      return updated;
-    });
-
-    setTransactions((prev) => {
-      const updated = prev.filter((transaction) => transaction.accountId !== id);
-      saveTransactions(updated);
-      return updated;
-    });
-  }, []);
+  const deleteAccount = useCallback(async (id: string) => {
+    if (storageMode === 'supabase' && user) {
+      await deleteAccountSupabase(id);
+      // Transactions will be cascade deleted by database
+    } else {
+      setAccounts((prev) => {
+        const updated = prev.filter((account) => account.id !== id);
+        saveAccountsLocal(updated);
+        return updated;
+      });
+      setTransactions((prev) => {
+        const updated = prev.filter((transaction) => transaction.accountId !== id);
+        saveTransactionsLocal(updated);
+        return updated;
+      });
+    }
+    
+    // Update local state for immediate UI feedback
+    setAccounts((prev) => prev.filter((account) => account.id !== id));
+    setTransactions((prev) => prev.filter((transaction) => transaction.accountId !== id));
+  }, [storageMode, user]);
 
   // Transaction operations
-  const addTransaction = useCallback((transactionData: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addTransaction = useCallback(async (transactionData: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newTransaction: Transaction = {
       ...transactionData,
       id: generateId(),
@@ -125,35 +188,57 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
       updatedAt: getCurrentTimestamp(),
     };
 
-    setTransactions((prev) => {
-      const updated = [...prev, newTransaction];
-      saveTransactions(updated);
-      return updated;
-    });
-  }, []);
+    if (storageMode === 'supabase' && user) {
+      await createTransactionSupabase(newTransaction);
+    } else {
+      setTransactions((prev) => {
+        const updated = [...prev, newTransaction];
+        saveTransactionsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setTransactions((prev) => [...prev, newTransaction]);
+  }, [storageMode, user]);
 
-  const updateTransaction = useCallback((id: string, updates: Partial<Transaction>) => {
-    setTransactions((prev) => {
-      const updated = prev.map((transaction) =>
-        transaction.id === id
-          ? { ...transaction, ...updates, updatedAt: getCurrentTimestamp() }
-          : transaction
-      );
-      saveTransactions(updated);
-      return updated;
-    });
-  }, []);
+  const updateTransaction = useCallback(async (id: string, updates: Partial<Transaction>) => {
+    const updatedData = { ...updates, updatedAt: getCurrentTimestamp() };
+    
+    if (storageMode === 'supabase' && user) {
+      await updateTransactionSupabase(id, updatedData);
+    } else {
+      setTransactions((prev) => {
+        const updated = prev.map((transaction) =>
+          transaction.id === id ? { ...transaction, ...updatedData } : transaction
+        );
+        saveTransactionsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setTransactions((prev) =>
+      prev.map((transaction) =>
+        transaction.id === id ? { ...transaction, ...updatedData } : transaction
+      )
+    );
+  }, [storageMode, user]);
 
-  const deleteTransaction = useCallback((id: string) => {
-    setTransactions((prev) => {
-      const updated = prev.filter((transaction) => transaction.id !== id);
-      saveTransactions(updated);
-      return updated;
-    });
-  }, []);
+  const deleteTransaction = useCallback(async (id: string) => {
+    if (storageMode === 'supabase' && user) {
+      await deleteTransactionSupabase(id);
+    } else {
+      setTransactions((prev) => {
+        const updated = prev.filter((transaction) => transaction.id !== id);
+        saveTransactionsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setTransactions((prev) => prev.filter((transaction) => transaction.id !== id));
+  }, [storageMode, user]);
 
   // Budget operations
-  const addBudget = useCallback((budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addBudget = useCallback(async (budgetData: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newBudget: Budget = {
       ...budgetData,
       id: generateId(),
@@ -161,35 +246,57 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
       updatedAt: getCurrentTimestamp(),
     };
 
-    setBudgets((prev) => {
-      const updated = [...prev, newBudget];
-      saveBudgets(updated);
-      return updated;
-    });
-  }, []);
+    if (storageMode === 'supabase' && user) {
+      await createBudgetSupabase(newBudget);
+    } else {
+      setBudgets((prev) => {
+        const updated = [...prev, newBudget];
+        saveBudgetsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setBudgets((prev) => [...prev, newBudget]);
+  }, [storageMode, user]);
 
-  const updateBudget = useCallback((id: string, updates: Partial<Budget>) => {
-    setBudgets((prev) => {
-      const updated = prev.map((budget) =>
-        budget.id === id
-          ? { ...budget, ...updates, updatedAt: getCurrentTimestamp() }
-          : budget
-      );
-      saveBudgets(updated);
-      return updated;
-    });
-  }, []);
+  const updateBudget = useCallback(async (id: string, updates: Partial<Budget>) => {
+    const updatedData = { ...updates, updatedAt: getCurrentTimestamp() };
+    
+    if (storageMode === 'supabase' && user) {
+      await updateBudgetSupabase(id, updatedData);
+    } else {
+      setBudgets((prev) => {
+        const updated = prev.map((budget) =>
+          budget.id === id ? { ...budget, ...updatedData } : budget
+        );
+        saveBudgetsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setBudgets((prev) =>
+      prev.map((budget) =>
+        budget.id === id ? { ...budget, ...updatedData } : budget
+      )
+    );
+  }, [storageMode, user]);
 
-  const deleteBudget = useCallback((id: string) => {
-    setBudgets((prev) => {
-      const updated = prev.filter((budget) => budget.id !== id);
-      saveBudgets(updated);
-      return updated;
-    });
-  }, []);
+  const deleteBudget = useCallback(async (id: string) => {
+    if (storageMode === 'supabase' && user) {
+      await deleteBudgetSupabase(id);
+    } else {
+      setBudgets((prev) => {
+        const updated = prev.filter((budget) => budget.id !== id);
+        saveBudgetsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setBudgets((prev) => prev.filter((budget) => budget.id !== id));
+  }, [storageMode, user]);
 
   // Goal operations
-  const addGoal = useCallback((goalData: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const addGoal = useCallback(async (goalData: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newGoal: Goal = {
       ...goalData,
       id: generateId(),
@@ -197,65 +304,109 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
       updatedAt: getCurrentTimestamp(),
     };
 
-    setGoals((prev) => {
-      const updated = [...prev, newGoal];
-      saveGoals(updated);
-      return updated;
-    });
-  }, []);
+    if (storageMode === 'supabase' && user) {
+      await createGoalSupabase(newGoal);
+    } else {
+      setGoals((prev) => {
+        const updated = [...prev, newGoal];
+        saveGoalsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setGoals((prev) => [...prev, newGoal]);
+  }, [storageMode, user]);
 
-  const updateGoal = useCallback((id: string, updates: Partial<Goal>) => {
-    setGoals((prev) => {
-      const updated = prev.map((goal) =>
-        goal.id === id
-          ? { ...goal, ...updates, updatedAt: getCurrentTimestamp() }
-          : goal
-      );
-      saveGoals(updated);
-      return updated;
-    });
-  }, []);
+  const updateGoal = useCallback(async (id: string, updates: Partial<Goal>) => {
+    const updatedData = { ...updates, updatedAt: getCurrentTimestamp() };
+    
+    if (storageMode === 'supabase' && user) {
+      await updateGoalSupabase(id, updatedData);
+    } else {
+      setGoals((prev) => {
+        const updated = prev.map((goal) =>
+          goal.id === id ? { ...goal, ...updatedData } : goal
+        );
+        saveGoalsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setGoals((prev) =>
+      prev.map((goal) =>
+        goal.id === id ? { ...goal, ...updatedData } : goal
+      )
+    );
+  }, [storageMode, user]);
 
-  const deleteGoal = useCallback((id: string) => {
-    setGoals((prev) => {
-      const updated = prev.filter((goal) => goal.id !== id);
-      saveGoals(updated);
-      return updated;
-    });
-  }, []);
+  const deleteGoal = useCallback(async (id: string) => {
+    if (storageMode === 'supabase' && user) {
+      await deleteGoalSupabase(id);
+    } else {
+      setGoals((prev) => {
+        const updated = prev.filter((goal) => goal.id !== id);
+        saveGoalsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setGoals((prev) => prev.filter((goal) => goal.id !== id));
+  }, [storageMode, user]);
 
   // Recurring pattern operations
-  const addRecurringPattern = useCallback((patternData: Omit<RecurringPattern, 'id' | 'createdAt'>) => {
+  const addRecurringPattern = useCallback(async (patternData: Omit<RecurringPattern, 'id' | 'createdAt'>) => {
     const newPattern: RecurringPattern = {
       ...patternData,
       id: generateId(),
       createdAt: getCurrentTimestamp(),
     };
 
-    setRecurringPatterns((prev) => {
-      const updated = [...prev, newPattern];
-      saveRecurringPatterns(updated);
-      return updated;
-    });
-  }, []);
+    if (storageMode === 'supabase' && user) {
+      await createRecurringPatternSupabase(newPattern);
+    } else {
+      setRecurringPatterns((prev) => {
+        const updated = [...prev, newPattern];
+        saveRecurringPatternsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setRecurringPatterns((prev) => [...prev, newPattern]);
+  }, [storageMode, user]);
 
-  const updateRecurringPattern = useCallback((id: string, updates: Partial<RecurringPattern>) => {
-    setRecurringPatterns((prev) => {
-      const updated = prev.map((pattern) =>
+  const updateRecurringPattern = useCallback(async (id: string, updates: Partial<RecurringPattern>) => {
+    if (storageMode === 'supabase' && user) {
+      await updateRecurringPatternSupabase(id, updates);
+    } else {
+      setRecurringPatterns((prev) => {
+        const updated = prev.map((pattern) =>
+          pattern.id === id ? { ...pattern, ...updates } : pattern
+        );
+        saveRecurringPatternsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setRecurringPatterns((prev) =>
+      prev.map((pattern) =>
         pattern.id === id ? { ...pattern, ...updates } : pattern
-      );
-      saveRecurringPatterns(updated);
-      return updated;
-    });
-  }, []);
+      )
+    );
+  }, [storageMode, user]);
 
-  const deleteRecurringPattern = useCallback((id: string) => {
-    setRecurringPatterns((prev) => {
-      const updated = prev.filter((pattern) => pattern.id !== id);
-      saveRecurringPatterns(updated);
-      return updated;
-    });
-  }, []);
+  const deleteRecurringPattern = useCallback(async (id: string) => {
+    if (storageMode === 'supabase' && user) {
+      await deleteRecurringPatternSupabase(id);
+    } else {
+      setRecurringPatterns((prev) => {
+        const updated = prev.filter((pattern) => pattern.id !== id);
+        saveRecurringPatternsLocal(updated);
+        return updated;
+      });
+    }
+    
+    setRecurringPatterns((prev) => prev.filter((pattern) => pattern.id !== id));
+  }, [storageMode, user]);
 
   // Export/Import operations
   const exportData = useCallback((): string => {
@@ -272,73 +423,92 @@ export function FinanceProvider({ children }: FinanceProviderProps) {
     return exportTransactionsToCSV(transactions, accounts);
   }, [transactions, accounts]);
 
-  const importData = useCallback((data: string, strategy: 'merge' | 'replace') => {
-    try {
-      const importedData = importFromJSON(data);
+  const importData = useCallback(
+    (data: string, strategy: 'merge' | 'replace') => {
+      try {
+        const importedData = importFromJSON(data);
 
-      if (strategy === 'replace') {
-        // Replace all data
-        setAccounts(importedData.accounts);
-        setTransactions(importedData.transactions);
-        setBudgets(importedData.budgets);
-        setGoals(importedData.goals);
-        setRecurringPatterns(importedData.recurringPatterns);
+        if (strategy === 'replace') {
+          // Replace all data
+          setAccounts(importedData.accounts);
+          setTransactions(importedData.transactions);
+          setBudgets(importedData.budgets);
+          setGoals(importedData.goals);
+          setRecurringPatterns(importedData.recurringPatterns);
 
-        // Save to storage
-        saveAccounts(importedData.accounts);
-        saveTransactions(importedData.transactions);
-        saveBudgets(importedData.budgets);
-        saveGoals(importedData.goals);
-        saveRecurringPatterns(importedData.recurringPatterns);
-      } else {
-        // Merge data (add new items, keep existing)
-        setAccounts((prev) => {
-          const existingIds = new Set(prev.map((a) => a.id));
-          const newAccounts = importedData.accounts.filter((a) => !existingIds.has(a.id));
-          const updated = [...prev, ...newAccounts];
-          saveAccounts(updated);
-          return updated;
-        });
+          // Save to localStorage only (Supabase mode will reload from cloud)
+          if (storageMode === 'local') {
+            saveAccountsLocal(importedData.accounts);
+            saveTransactionsLocal(importedData.transactions);
+            saveBudgetsLocal(importedData.budgets);
+            saveGoalsLocal(importedData.goals);
+            saveRecurringPatternsLocal(importedData.recurringPatterns);
+          }
+        } else {
+          // Merge data (add new items, keep existing)
+          setAccounts((prev) => {
+            const existingIds = new Set(prev.map((a) => a.id));
+            const newAccounts = importedData.accounts.filter((a) => !existingIds.has(a.id));
+            const updated = [...prev, ...newAccounts];
+            if (storageMode === 'local') {
+              saveAccountsLocal(updated);
+            }
+            return updated;
+          });
 
-        setTransactions((prev) => {
-          const existingIds = new Set(prev.map((t) => t.id));
-          const newTransactions = importedData.transactions.filter((t) => !existingIds.has(t.id));
-          const updated = [...prev, ...newTransactions];
-          saveTransactions(updated);
-          return updated;
-        });
+          setTransactions((prev) => {
+            const existingIds = new Set(prev.map((t) => t.id));
+            const newTransactions = importedData.transactions.filter(
+              (t) => !existingIds.has(t.id)
+            );
+            const updated = [...prev, ...newTransactions];
+            if (storageMode === 'local') {
+              saveTransactionsLocal(updated);
+            }
+            return updated;
+          });
 
-        setBudgets((prev) => {
-          const existingIds = new Set(prev.map((b) => b.id));
-          const newBudgets = importedData.budgets.filter((b) => !existingIds.has(b.id));
-          const updated = [...prev, ...newBudgets];
-          saveBudgets(updated);
-          return updated;
-        });
+          setBudgets((prev) => {
+            const existingIds = new Set(prev.map((b) => b.id));
+            const newBudgets = importedData.budgets.filter((b) => !existingIds.has(b.id));
+            const updated = [...prev, ...newBudgets];
+            if (storageMode === 'local') {
+              saveBudgetsLocal(updated);
+            }
+            return updated;
+          });
 
-        setGoals((prev) => {
-          const existingIds = new Set(prev.map((g) => g.id));
-          const newGoals = importedData.goals.filter((g) => !existingIds.has(g.id));
-          const updated = [...prev, ...newGoals];
-          saveGoals(updated);
-          return updated;
-        });
+          setGoals((prev) => {
+            const existingIds = new Set(prev.map((g) => g.id));
+            const newGoals = importedData.goals.filter((g) => !existingIds.has(g.id));
+            const updated = [...prev, ...newGoals];
+            if (storageMode === 'local') {
+              saveGoalsLocal(updated);
+            }
+            return updated;
+          });
 
-        setRecurringPatterns((prev) => {
-          const existingIds = new Set(prev.map((p) => p.id));
-          const newPatterns = importedData.recurringPatterns.filter((p) => !existingIds.has(p.id));
-          const updated = [...prev, ...newPatterns];
-          saveRecurringPatterns(updated);
-          return updated;
-        });
+          setRecurringPatterns((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const newPatterns = importedData.recurringPatterns.filter(
+              (p) => !existingIds.has(p.id)
+            );
+            const updated = [...prev, ...newPatterns];
+            if (storageMode === 'local') {
+              saveRecurringPatternsLocal(updated);
+            }
+            return updated;
+          });
+        }
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          throw new Error(`Import failed: ${error.message}`);
+        }
+        throw error;
       }
-    } catch (error) {
-      if (error instanceof ValidationError) {
-        throw new Error(`Import failed: ${error.message}`);
-      }
-      throw error;
-    }
-  }, []);
+    },
+    [storageMode]
+  );
 
   const value: FinanceContextType = {
     accounts,

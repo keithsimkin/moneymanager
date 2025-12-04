@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useFinance } from '@/contexts/FinanceContext';
 import { useAI, OPENROUTER_MODELS } from '@/contexts/AIContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -18,18 +19,114 @@ import {
   XCircleIcon,
   EyeIcon,
   EyeSlashIcon,
-  ArrowTopRightOnSquareIcon
+  ArrowTopRightOnSquareIcon,
+  CloudIcon,
+  CloudArrowUpIcon,
+  CloudArrowDownIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
+import { syncAllToSupabase, fetchAllFromSupabase } from '@/utils/supabaseStorage';
+import { useStorage } from '@/contexts/StorageContext';
 
 export default function Settings() {
   const { theme, setTheme } = useTheme();
-  const { exportData, exportTransactionsCSV, importData } = useFinance();
+  const {
+    accounts,
+    transactions,
+    budgets,
+    goals,
+    recurringPatterns,
+    exportData,
+    exportTransactionsCSV,
+    importData,
+  } = useFinance();
   const { config, updateConfig, testConnection } = useAI();
+  const { user } = useAuth();
+  const { storageMode, setStorageMode } = useStorage();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  // Cloud sync state
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<{
+    type: 'idle' | 'success' | 'error';
+    message?: string;
+  }>({ type: 'idle' });
+
+  const handleUploadToCloud = async () => {
+    setSyncing(true);
+    setSyncStatus({ type: 'idle' });
+
+    try {
+      await syncAllToSupabase({
+        accounts,
+        transactions,
+        budgets,
+        goals,
+        recurringPatterns,
+      });
+      setSyncStatus({ type: 'success', message: 'Data uploaded to cloud successfully!' });
+    } catch (error) {
+      setSyncStatus({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Upload failed',
+      });
+    }
+
+    setSyncing(false);
+    setTimeout(() => setSyncStatus({ type: 'idle' }), 5000);
+  };
+
+  const handleDownloadFromCloud = async () => {
+    setSyncing(true);
+    setSyncStatus({ type: 'idle' });
+
+    try {
+      const data = await fetchAllFromSupabase();
+      const jsonData = JSON.stringify({
+        accounts: data.accounts,
+        transactions: data.transactions,
+        budgets: data.budgets,
+        goals: data.goals,
+        recurringPatterns: data.recurringPatterns,
+        exportDate: new Date().toISOString(),
+        version: '1.0.0',
+      });
+      importData(jsonData, 'replace');
+      setSyncStatus({ type: 'success', message: 'Data restored from cloud successfully!' });
+    } catch (error) {
+      setSyncStatus({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Download failed',
+      });
+    }
+
+    setSyncing(false);
+    setTimeout(() => setSyncStatus({ type: 'idle' }), 5000);
+  };
+
+  const handleToggleStorageMode = async () => {
+    const newMode = storageMode === 'local' ? 'supabase' : 'local';
+
+    if (newMode === 'supabase' && !user) {
+      setSyncStatus({
+        type: 'error',
+        message: 'Please sign in to use Supabase storage',
+      });
+      setTimeout(() => setSyncStatus({ type: 'idle' }), 3000);
+      return;
+    }
+
+    setStorageMode(newMode);
+    setSyncStatus({
+      type: 'success',
+      message: `Switched to ${newMode === 'local' ? 'Local Storage' : 'Supabase'}. Reload to see changes.`,
+    });
+    setTimeout(() => setSyncStatus({ type: 'idle' }), 3000);
+  };
 
   const handleExportJSON = () => {
     const data = exportData();
@@ -234,6 +331,113 @@ export default function Settings() {
               </Button>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Cloud Sync - Supabase */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CloudIcon className="h-5 w-5" />
+            Cloud Sync (Supabase)
+          </CardTitle>
+          <CardDescription>
+            Sync your financial data to Supabase for backup and cross-device access
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!user ? (
+            <div className="rounded-lg bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-900">
+              <p className="text-sm text-amber-900 dark:text-amber-100">
+                <strong>Sign in required:</strong> You need to sign in to use cloud sync. 
+                Go to the login page to create an account or sign in.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Connection Status */}
+              <div className="rounded-lg bg-green-50 dark:bg-green-950/30 p-4 border border-green-200 dark:border-green-900">
+                <div className="flex items-center gap-2">
+                  <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    Connected as <strong>{user.email}</strong>
+                  </p>
+                </div>
+              </div>
+
+              {/* Storage Mode Toggle */}
+              <div className="flex items-center justify-between pt-2 border-t">
+                <div>
+                  <Label className="text-base">Storage Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Current: {storageMode === 'local' ? 'Local Storage' : 'Supabase Cloud'}
+                  </p>
+                </div>
+                <Button onClick={handleToggleStorageMode} variant="outline">
+                  Switch to {storageMode === 'local' ? 'Supabase' : 'Local'}
+                </Button>
+              </div>
+
+              {/* Sync Status Messages */}
+              {syncStatus.type === 'success' && (
+                <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <CheckCircleIcon className="h-4 w-4" />
+                  {syncStatus.message}
+                </div>
+              )}
+              {syncStatus.type === 'error' && (
+                <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+                  <XCircleIcon className="h-4 w-4" />
+                  {syncStatus.message}
+                </div>
+              )}
+
+              {/* Sync Actions */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base">Upload to Cloud</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Save your current data to Supabase
+                    </p>
+                  </div>
+                  <Button onClick={handleUploadToCloud} variant="outline" disabled={syncing}>
+                    {syncing ? (
+                      <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <CloudArrowUpIcon className="h-4 w-4 mr-2" />
+                    )}
+                    Upload
+                  </Button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-base">Download from Cloud</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Restore data from Supabase (replaces local data)
+                    </p>
+                  </div>
+                  <Button onClick={handleDownloadFromCloud} variant="outline" disabled={syncing}>
+                    {syncing ? (
+                      <ArrowPathIcon className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <CloudArrowDownIcon className="h-4 w-4 mr-2" />
+                    )}
+                    Download
+                  </Button>
+                </div>
+              </div>
+
+              {/* Setup Note */}
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-950/30 p-4 border border-blue-200 dark:border-blue-900">
+                <p className="text-sm text-blue-900 dark:text-blue-100">
+                  <strong>Note:</strong> Make sure you have created the <code className="bg-blue-100 dark:bg-blue-900 px-1 rounded">user_finance_data</code> table 
+                  in your Supabase project. See SUPABASE_SETUP.md for details.
+                </p>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
 

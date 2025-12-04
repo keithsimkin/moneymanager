@@ -1,6 +1,6 @@
-# Supabase Authentication Setup Guide
+# Supabase Setup Guide
 
-This app now uses Supabase for authentication instead of localStorage.
+This app uses Supabase for authentication and optional cloud data storage.
 
 ## Setup Steps
 
@@ -42,7 +42,17 @@ By default, Supabase requires email confirmation. For development, you can disab
 
 For production, keep email confirmation enabled for security.
 
-### 5. Restart Your Dev Server
+### 5. Create Database Tables (For Cloud Storage)
+
+If you want to use cloud storage for your financial data:
+
+1. Go to **SQL Editor** in your Supabase dashboard
+2. Copy the contents of `supabase-migration.sql` from the project root
+3. Paste and run the SQL script
+4. This creates tables for: accounts, transactions, budgets, goals, and recurring_patterns
+5. Row Level Security (RLS) is automatically enabled to protect user data
+
+### 6. Restart Your Dev Server
 
 After updating the `.env` file, restart your development server:
 
@@ -56,10 +66,30 @@ The Supabase integration provides:
 
 - ✅ Secure email/password authentication
 - ✅ Session management with automatic token refresh
+- ✅ Optional cloud storage for financial data
+- ✅ Dual storage mode: Local Storage or Supabase
+- ✅ Row Level Security for data protection
+- ✅ Real-time sync across devices (when using Supabase mode)
 - ✅ Password reset functionality (can be added)
 - ✅ Email verification (optional)
 - ✅ OAuth providers (Google, GitHub, etc. - can be added)
-- ✅ Row Level Security for data protection
+
+## Storage Modes
+
+The app supports two storage modes:
+
+### Local Storage (Default)
+- All data stored in browser localStorage
+- No internet connection required
+- Data stays on your device
+- Fast and private
+
+### Supabase Cloud Storage
+- Data stored in Supabase database
+- Accessible from any device
+- Automatic backup
+- Requires authentication
+- Switch in Settings → Cloud Sync
 
 ## User Data Storage
 
@@ -68,6 +98,24 @@ User profiles are stored in Supabase's auth system with:
 - Name (stored in user_metadata)
 - Created date
 - Unique user ID
+
+Financial data (when using Supabase mode):
+- Accounts, Transactions, Budgets, Goals, Recurring Patterns
+- Each record is linked to the user's ID
+- Protected by Row Level Security policies
+
+## Using Cloud Storage
+
+1. Sign in to the app
+2. Go to **Settings** → **Cloud Sync**
+3. Click **"Switch to Supabase"** to enable cloud storage
+4. Click **"Upload to Cloud"** to sync your local data
+5. Your data is now stored in Supabase and accessible from any device
+
+To restore data on another device:
+1. Sign in with the same account
+2. Switch to Supabase mode
+3. Click **"Download from Cloud"**
 
 ## Next Steps (Optional)
 
@@ -82,10 +130,6 @@ await supabase.auth.resetPasswordForEmail(email);
 
 Enable Google, GitHub, or other OAuth providers in:
 **Authentication** → **Providers** → Enable your preferred provider
-
-### Secure Your Data
-
-Set up Row Level Security (RLS) policies to ensure users can only access their own data.
 
 ## Troubleshooting
 
