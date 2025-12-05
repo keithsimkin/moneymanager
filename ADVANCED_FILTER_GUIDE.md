@@ -120,6 +120,24 @@ const [maxAmount, setMaxAmount] = useState<number>(10000); // Change default max
 
 ## Integration with Other Pages
 
+The AdvancedFilterBar is now integrated into:
+
+### Dashboard Page ✅
+
+- Toggle filters with the "Filters" button in the header
+- Filter badge shows active filter count
+- Recent transactions section shows filtered results
+- Download includes filtered data and applied filters
+- Collapsible filter panel to save space
+
+### Transactions Page ✅
+
+- Always visible filter bar
+- Full filtering capabilities
+- Transaction count shows filtered vs total
+
+### Adding to Other Pages
+
 The AdvancedFilterBar can be integrated into any page that displays transactions:
 
 1. Import the component and utility
